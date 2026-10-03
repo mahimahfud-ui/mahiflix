@@ -1304,7 +1304,6 @@ const websites = [
   },
 
 
-
   {
     name: "Plex",
     url: "https://watch.plex.tv/en-GB"
@@ -1375,11 +1374,6 @@ const websites = [
     url: "https://netout.pages.dev/home"
   },
 
-  {
-    name: "Coming Soon",
-    url: null
-  }
-
 ];
 
 
@@ -1420,11 +1414,6 @@ const apps = [
     url:
       "https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk"
   },
-
-  {
-    name: "Coming Soon",
-    url: null
-  }
 
 ];
 
@@ -1635,7 +1624,26 @@ function loadRealLogo(
     encodeURIComponent(host);
 
 
+  const directLogoHosts = new Set([
+    "techvyro-movies.onrender.com",
+    "moviesfree.cv",
+    "netout.pages.dev"
+  ]);
+
   const sources = [
+
+    /*
+      Direct Google favicon — prioritized for sites
+      whose favicon is not reliably detected by the
+      normal source order.
+    */
+
+    ...(directLogoHosts.has(host)
+      ? [
+          `https://www.google.com/s2/favicons?sz=256&domain=${encodedHost}`,
+          `https://icons.duckduckgo.com/ip3/${encodedHost}.ico`
+        ]
+      : []),
 
     /*
       Primary:
@@ -1707,12 +1715,7 @@ function loadRealLogo(
 
     img.onload = () => {
 
-      if (
-        !img.naturalWidth ||
-        !img.naturalHeight ||
-        img.naturalWidth < 16 ||
-        img.naturalHeight < 16
-      ) {
+      if (!img.naturalWidth || !img.naturalHeight) {
 
         tryNext(i + 1);
 

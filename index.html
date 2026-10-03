@@ -7,6 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Decide before first paint whether the intro plays (first visit this session, motion allowed). */
+  try {
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !sessionStorage.getItem("nf-intro"))
+      document.documentElement.classList.add("intro-on");
+  } catch (e) {}
+</script>
 <style>
   :root {
     --bg: #070707;
@@ -49,9 +56,9 @@
   .wordmark b { font-weight: 400; font-size: 1.08em; }
 
   .tagline {
-    margin: 2px auto 0; max-width: 30ch; text-align: center;
-    font-size: clamp(15px, 2.6vw, 20px); font-weight: 500; letter-spacing: .02em; line-height: 1.4;
-    color: #e5242f; text-wrap: balance;
+    margin: 2px 0 0; text-align: center; white-space: nowrap;
+    font-size: clamp(10px, 3.7vw, 21px); font-weight: 500; letter-spacing: .01em; line-height: 1.4;
+    color: #e5242f;
   }
 
   /* ---------- Instagram credit ---------- */
@@ -144,6 +151,45 @@
     padding: 3px 8px; border-radius: 6px;
   }
 
+  /* ---------- Cinematic intro (original NIGHTFLIX sequence, ~2.5s) ---------- */
+  .intro { display: none; }
+  .intro-on .intro {
+    position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; justify-items: center;
+    background: #000; overflow: hidden; cursor: pointer;
+    transition: opacity .5s ease;
+  }
+  .intro-on main { opacity: 0; }
+  main { transition: opacity .7s ease; }
+  .intro-leave main { opacity: 1; }
+  .intro-leave .intro { opacity: 0; pointer-events: none; }
+  .intro::before { /* red glow rising from the dark */
+    content: ""; position: absolute; left: 50%; top: 50%; width: 120vmax; height: 60vmax;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at center, rgba(229,9,20,.38), rgba(229,9,20,.08) 35%, transparent 62%);
+    opacity: 0; animation: glow 2.2s ease-out .15s forwards;
+  }
+  .intro::after { /* faint film grain / dust */
+    content: ""; position: absolute; inset: -50%;
+    background-image: radial-gradient(rgba(255,255,255,.35) 1px, transparent 1.4px), radial-gradient(rgba(229,9,20,.4) 1px, transparent 1.4px);
+    background-size: 90px 90px, 140px 140px; background-position: 0 0, 40px 60px;
+    opacity: 0; animation: dust 2.4s linear forwards;
+  }
+  .intro-mark { position: relative; z-index: 1; opacity: 0; animation: reveal 1.3s cubic-bezier(.2,.7,.2,1) .35s forwards; }
+  .intro .wordmark {
+    margin: 0;
+    background:
+      linear-gradient(100deg, transparent 42%, rgba(255,255,255,.85) 50%, transparent 58%) 160% 0 / 250% 100% no-repeat,
+      linear-gradient(180deg, #ff2d37 0%, var(--red) 45%, var(--red-deep) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    animation: sweep 1s ease-in-out 1.15s forwards;
+  }
+  .intro .tagline { position: relative; z-index: 1; margin-top: 14px; opacity: 0; animation: rise .7s ease 1.3s forwards; }
+  @keyframes glow { to { opacity: 1; } }
+  @keyframes dust { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: .35; } 100% { opacity: 0; transform: translateY(-60px); } }
+  @keyframes reveal { 0% { opacity: 0; transform: scale(1.14); filter: blur(14px); } 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
+  @keyframes sweep { to { background-position: -60% 0, 0 0; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
   @media (max-width: 560px) {
     body { padding-top: 32px; }
     .grid { grid-template-columns: repeat(3, 1fr); gap: 26px 14px; }
@@ -153,13 +199,17 @@
     .tab { padding: 10px 18px; }
   }
   @media (max-width: 360px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .intro { display: none !important; } .intro-on main { opacity: 1; } }
 </style>
 </head>
 <body>
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-mark"><span class="wordmark"><b>N</b>IGHTFLIX</span></div>
+  <p class="tagline">Unlocking the Universe of Movies &amp; Web Series</p>
+</div>
 <main>
   <h1 class="brand"><span class="wordmark" aria-label="NIGHTFLIX"><b>N</b>IGHTFLIX</span></h1>
-  <p class="tagline">Unlocking the universe of movies &amp; web series</p>
+  <p class="tagline">Unlocking the Universe of Movies &amp; Web Series</p>
 
   <div class="credit">
     <a href="https://www.instagram.com/mahimahfud/" target="_blank" rel="noopener noreferrer">
@@ -354,6 +404,7 @@ function websiteAvatar(item, active, idx) {
     const img = new Image();
     img.alt = "";
     img.decoding = "async";
+    img.referrerPolicy = "no-referrer";   // many sites block hotlinks that send a referrer
     img.onload = () => {
       if (img.naturalWidth < sources[i][1]) return tryNext(i + 1);
       avatar.replaceChildren(img);
@@ -405,6 +456,21 @@ function renderGrid(container, list, kind) {
 
 renderGrid(document.getElementById("websites"), websites, "site");
 renderGrid(document.getElementById("apps"), apps, "app");
+
+/* ---------------- Intro animation ---------------- */
+(function intro() {
+  const root = document.documentElement;
+  if (!root.classList.contains("intro-on")) return;
+  try { sessionStorage.setItem("nf-intro", "1"); } catch (e) {}
+  let done = false;
+  const finish = () => {                       // fade intro out, reveal the page, then clean up
+    if (done) return; done = true;
+    root.classList.add("intro-leave");
+    setTimeout(() => root.classList.remove("intro-on", "intro-leave"), 700);
+  };
+  document.getElementById("intro").addEventListener("click", finish);   // tap to skip
+  setTimeout(finish, 2300);
+})();
 
 /* ---------------- Tabs ---------------- */
 const tabs = document.querySelectorAll(".tab");

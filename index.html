@@ -10,13 +10,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link
-  rel="preload"
-  as="audio"
-  href="./vidssave.com%20Netflix%20New%20Logo%20Animation%202019%20128kbps.mp3"
-  type="audio/mpeg"
->
-
 <script>
   /* ================================================================
      FIRST-PAINT INTRO DECISION
@@ -881,27 +874,7 @@
       forwards;
   }
 
-  /* ================================================================
-     LOCAL INTRO AUDIO
-     ================================================================ */
-
-  #introAudio {
-    position: fixed;
-
-    width: 1px;
-    height: 1px;
-
-    left: -100px;
-    top: -100px;
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    overflow: hidden;
-  }
-
-  @keyframes glow {
+    @keyframes glow {
     to {
       opacity: 1;
     }
@@ -1054,23 +1027,6 @@
 </head>
 
 <body>
-
-<!-- ================================================================
-     HIDDEN LOCAL AUDIO
-     ================================================================ -->
-
-<audio
-  id="introAudio"
-  preload="auto"
-  playsinline
-  aria-hidden="true"
->
-  <source
-    src="./vidssave.com%20Netflix%20New%20Logo%20Animation%202019%20128kbps.mp3"
-    type="audio/mpeg"
-  >
-</audio>
-
 
 <!-- ================================================================
      INTRO
@@ -2658,7 +2614,7 @@ renderGrid(
 
 
 /* ================================================================
-   INTRO + LOCAL AUDIO SYNC
+   INTRO
    ================================================================ */
 
 (function intro() {
@@ -2670,12 +2626,6 @@ renderGrid(
   const introEl =
     document.getElementById(
       "intro"
-    );
-
-
-  const audio =
-    document.getElementById(
-      "introAudio"
     );
 
 
@@ -2706,165 +2656,6 @@ renderGrid(
     false;
 
 
-  let audioStarted =
-    false;
-
-
-  /* ============================================================
-     AUDIO PREPARATION
-     ============================================================ */
-
-  if (audio) {
-
-    audio.volume =
-      1;
-
-    audio.currentTime =
-      0;
-
-    try {
-
-      audio.load();
-
-    } catch (e) {}
-
-  }
-
-
-  /* ============================================================
-     PLAY AUDIO
-     ============================================================ */
-
-  function tryPlaySound() {
-
-    if (
-      !audio ||
-      audioStarted ||
-      done
-    ) {
-      return;
-    }
-
-
-    try {
-
-      audio.currentTime =
-        0;
-
-
-      const playPromise =
-        audio.play();
-
-
-      if (
-        playPromise &&
-        typeof playPromise.then ===
-        "function"
-      ) {
-
-        playPromise
-          .then(() => {
-
-            audioStarted =
-              true;
-
-          })
-          .catch(() => {
-
-            /*
-              Chrome / browser autoplay
-              policy may block unmuted audio.
-              User interaction below will
-              unlock playback.
-            */
-
-          });
-
-      } else {
-
-        audioStarted =
-          true;
-
-      }
-
-    } catch (e) {}
-
-  }
-
-
-  /* ============================================================
-     START IMMEDIATELY
-     ============================================================ */
-
-  tryPlaySound();
-
-
-  /* ============================================================
-     AUTOPLAY UNLOCK
-     ============================================================ */
-
-  function unlockSound() {
-
-    if (
-      audioStarted ||
-      done
-    ) {
-      return;
-    }
-
-
-    tryPlaySound();
-
-  }
-
-
-  window.addEventListener(
-    "pointerdown",
-    unlockSound,
-    {
-      once: true,
-      passive: true
-    }
-  );
-
-
-  window.addEventListener(
-    "keydown",
-    unlockSound,
-    {
-      once: true
-    }
-  );
-
-
-  window.addEventListener(
-    "touchstart",
-    unlockSound,
-    {
-      once: true,
-      passive: true
-    }
-  );
-
-
-  /* ============================================================
-     AUDIO ENDED
-     ============================================================ */
-
-  if (audio) {
-
-    audio.addEventListener(
-      "ended",
-      finish
-    );
-
-  }
-
-
-  /* ============================================================
-     FINISH INTRO
-     ============================================================ */
-
   function finish() {
 
     if (done) {
@@ -2875,28 +2666,6 @@ renderGrid(
     done =
       true;
 
-
-    /* ----------------------------------------------------------
-       Stop audio
-       ---------------------------------------------------------- */
-
-    try {
-
-      if (audio) {
-
-        audio.pause();
-
-        audio.currentTime =
-          0;
-
-      }
-
-    } catch (e) {}
-
-
-    /* ----------------------------------------------------------
-       Fade intro
-       ---------------------------------------------------------- */
 
     root.classList.add(
       "intro-leave"
@@ -2918,19 +2687,11 @@ renderGrid(
   }
 
 
-  /* ============================================================
-     CLICK / TAP TO SKIP
-     ============================================================ */
-
   introEl.addEventListener(
     "click",
     finish
   );
 
-
-  /* ============================================================
-     EXACT 4-SECOND VISUAL WINDOW
-     ============================================================ */
 
   setTimeout(
     finish,

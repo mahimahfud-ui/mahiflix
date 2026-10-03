@@ -3,256 +3,699 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NIGHTFLIX</title>
+<meta name="theme-color" content="#070707">
+<meta name="description" content="MahiFlix — Unlocking the Universe of Movies & Web Series">
+<title>MahiFlix</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script>
-  /* Decide before first paint whether the intro plays (first visit this session, motion allowed). */
-  try {
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches && !sessionStorage.getItem("nf-intro"))
-      document.documentElement.classList.add("intro-on");
-  } catch (e) {}
-</script>
-<style>
-  :root {
-    --bg: #070707;
-    --surface: #141414;
-    --line: #262626;
-    --text: #f5f5f1;
-    --dim: #8c8c8c;
-    --red: #e50914;
-    --red-deep: #8f0710;
-  }
-  * { box-sizing: border-box; }
-  html { background: var(--bg); }
-  body {
-    margin: 0; min-height: 100vh;
-    background:
-      radial-gradient(ellipse 900px 380px at 50% -80px, rgba(229, 9, 20, .22), transparent 70%),
-      var(--bg);
-    color: var(--text);
-    font-family: "Inter", system-ui, sans-serif;
-    padding: 44px 20px 70px;
-    overflow-x: hidden;
-  }
-  main { max-width: 1040px; margin: 0 auto; }
 
-  /* ---------- Wordmark ---------- */
-  .brand { text-align: center; margin: 0; line-height: 1; }
-  .wordmark {
-    display: inline-block;
-    font-family: "Bebas Neue", Impact, sans-serif;
-    font-size: clamp(54px, 13vw, 128px);
-    letter-spacing: .03em;
-    transform: scaleY(1.18);
-    transform-origin: center top;
-    margin-bottom: .16em;
-    background: linear-gradient(180deg, #ff2d37 0%, var(--red) 45%, var(--red-deep) 100%);
-    -webkit-background-clip: text; background-clip: text;
-    color: transparent;
-    filter: drop-shadow(0 8px 22px rgba(229, 9, 20, .35));
+<script>
+/* First paint: play the intro only once per browser session, unless reduced motion is enabled. */
+try {
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches &&
+      !sessionStorage.getItem("mahiflix-intro")) {
+    document.documentElement.classList.add("intro-on");
   }
-  .wordmark b { font-weight: 400; font-size: 1.08em; }
+} catch (e) {}
+</script>
+
+<style>
+:root {
+  --bg: #070707;
+  --surface: #141414;
+  --surface-2: #101010;
+  --line: #262626;
+  --text: #f5f5f1;
+  --dim: #8c8c8c;
+  --red: #e50914;
+  --red-bright: #ff2d37;
+  --red-deep: #8f0710;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 900px 380px at 50% -80px, rgba(229, 9, 20, .22), transparent 70%),
+    linear-gradient(180deg, #090909 0%, var(--bg) 42%, #050505 100%);
+  color: var(--text);
+  font-family: "Inter", system-ui, sans-serif;
+  padding: 44px 20px 70px;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: .22;
+  background-image:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.06) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 80% 65%, rgba(229,9,20,.05) 0 1px, transparent 1.5px);
+  background-size: 120px 120px, 160px 160px;
+}
+
+main {
+  width: min(1040px, 100%);
+  margin: 0 auto;
+  transition: opacity .7s ease;
+}
+
+/* ---------- Brand ---------- */
+.brand {
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+}
+
+.wordmark {
+  display: inline-block;
+  font-family: "Bebas Neue", Impact, sans-serif;
+  font-size: clamp(54px, 13vw, 128px);
+  letter-spacing: .03em;
+  transform: scaleY(1.18);
+  transform-origin: center top;
+  margin-bottom: .16em;
+  background: linear-gradient(
+    180deg,
+    var(--red-bright) 0%,
+    var(--red) 45%,
+    var(--red-deep) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 8px 22px rgba(229, 9, 20, .35));
+}
+
+.wordmark b {
+  font-weight: 400;
+  font-size: 1.08em;
+}
+
+/* Exact tagline — intentionally kept on one line. */
+.tagline {
+  margin: 2px 0 0;
+  text-align: center;
+  white-space: nowrap;
+  font-size: clamp(10px, 3.7vw, 21px);
+  font-weight: 500;
+  letter-spacing: .01em;
+  line-height: 1.4;
+  color: #e5242f;
+}
+
+/* ---------- Instagram icon only ---------- */
+.credit {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.credit a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: transform .22s ease, filter .22s ease, opacity .22s ease;
+}
+
+.credit a:hover,
+.credit a:focus-visible {
+  transform: scale(1.12);
+  filter: brightness(1.15) drop-shadow(0 0 10px rgba(229, 9, 20, .32));
+}
+
+.credit a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.credit svg {
+  width: 23px;
+  height: 23px;
+  display: block;
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: flex;
+  gap: 6px;
+  width: fit-content;
+  margin: 30px auto 38px;
+  padding: 5px;
+  background: rgba(20,20,20,.92);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0,0,0,.25);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 0;
+  background: transparent;
+  color: var(--dim);
+  font: 600 14px "Inter", sans-serif;
+  padding: 11px 22px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .25s ease, color .25s ease, transform .2s ease;
+}
+
+.tab svg {
+  width: 17px;
+  height: 17px;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab:active {
+  transform: scale(.97);
+}
+
+.tab[aria-selected="true"] {
+  background: var(--red);
+  color: #fff;
+  box-shadow: 0 7px 18px rgba(229,9,20,.18);
+}
+
+.tab:focus-visible,
+.tile:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+/* ---------- Grid ---------- */
+.grid {
+  display: grid;
+  gap: 34px 22px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.grid[hidden] {
+  display: none;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--dim);
+  transition: transform .3s ease, color .3s ease;
+}
+
+.avatar {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: var(--c1);
+  box-shadow: 0 10px 24px -14px rgba(0,0,0,.9);
+  transition: transform .3s ease, box-shadow .3s ease;
+  isolation: isolate;
+}
+
+.avatar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.16), transparent 34%),
+    linear-gradient(180deg, transparent 62%, rgba(0,0,0,.18));
+  pointer-events: none;
+  z-index: 3;
+}
+
+.tile.site .avatar {
+  background: linear-gradient(150deg, var(--c1), var(--c2));
+}
+
+.tile.site .avatar img.site-logo {
+  width: 64%;
+  height: 64%;
+  max-width: 90px;
+  max-height: 90px;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  background: rgba(255,255,255,.96);
+  padding: 8%;
+  border-radius: 22%;
+  box-shadow: 0 8px 20px -5px rgba(0,0,0,.48);
+}
+
+.initials {
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  font: 400 clamp(40px, 7vw, 58px) "Bebas Neue", sans-serif;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0,0,0,.3);
+}
+
+.tile.app .avatar {
+  border-radius: 30%;
+  background: var(--surface);
+}
+
+.tile.app .avatar svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+a.tile:hover,
+a.tile:focus-visible {
+  transform: translateY(-6px);
+  color: #fff;
+}
+
+a.tile:hover .avatar,
+a.tile:focus-visible .avatar {
+  transform: scale(1.05);
+  box-shadow:
+    0 18px 34px -12px var(--c1),
+    0 0 0 1px rgba(255,255,255,.14);
+}
+
+/* ---------- Coming Soon ---------- */
+.tile.soon {
+  cursor: default;
+}
+
+.tile.soon .avatar {
+  background: var(--surface);
+  border: 1px dashed #3a3a3a;
+  box-shadow: none;
+}
+
+.tile.soon .avatar::after {
+  display: none;
+}
+
+.tile.soon .initials {
+  color: #4a4a4a;
+}
+
+.tile.soon .name {
+  color: #5d5d5d;
+}
+
+.badge {
+  position: absolute;
+  z-index: 4;
+  bottom: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  color: var(--dim);
+  background: #0c0c0c;
+  border: 1px solid var(--line);
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* ---------- Cinematic intro ---------- */
+.intro {
+  display: none;
+}
+
+.intro-on .intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  background: #000;
+  overflow: hidden;
+  cursor: pointer;
+  transition: opacity .5s ease;
+}
+
+.intro-on main {
+  opacity: 0;
+}
+
+.intro-leave main {
+  opacity: 1;
+}
+
+.intro-leave .intro {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 120vmax;
+  height: 60vmax;
+  transform: translate(-50%, -50%);
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(229,9,20,.38),
+      rgba(229,9,20,.08) 35%,
+      transparent 62%
+    );
+  opacity: 0;
+  animation: glow 2.2s ease-out .15s forwards;
+}
+
+.intro::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background-image:
+    radial-gradient(rgba(255,255,255,.35) 1px, transparent 1.4px),
+    radial-gradient(rgba(229,9,20,.4) 1px, transparent 1.4px);
+  background-size: 90px 90px, 140px 140px;
+  background-position: 0 0, 40px 60px;
+  opacity: 0;
+  animation: dust 2.4s linear forwards;
+}
+
+.intro-mark {
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  animation: reveal 1.3s cubic-bezier(.2,.7,.2,1) .35s forwards;
+}
+
+.intro .wordmark {
+  margin: 0;
+  background:
+    linear-gradient(
+      100deg,
+      transparent 42%,
+      rgba(255,255,255,.85) 50%,
+      transparent 58%
+    ) 160% 0 / 250% 100% no-repeat,
+    linear-gradient(180deg, var(--red-bright) 0%, var(--red) 45%, var(--red-deep) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: sweep 1s ease-in-out 1.15s forwards;
+}
+
+.intro .tagline {
+  position: relative;
+  z-index: 1;
+  margin-top: 14px;
+  opacity: 0;
+  animation: rise .7s ease 1.3s forwards;
+}
+
+@keyframes glow {
+  to { opacity: 1; }
+}
+
+@keyframes dust {
+  0% { opacity: 0; transform: translateY(0); }
+  30% { opacity: .35; }
+  100% { opacity: 0; transform: translateY(-60px); }
+}
+
+@keyframes reveal {
+  0% {
+    opacity: 0;
+    transform: scale(1.14);
+    filter: blur(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes sweep {
+  to { background-position: -60% 0, 0 0; }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 700px) {
+  body {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .wordmark {
+    font-size: clamp(52px, 18vw, 94px);
+  }
+
+  /* Keeps the exact tagline on one line without horizontal scrolling. */
+  .tagline {
+    font-size: clamp(8.8px, 3.65vw, 18px);
+    letter-spacing: 0;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px 14px;
+  }
+
+  .avatar {
+    border-radius: 16px;
+  }
+
+  .name {
+    font-size: 12.5px;
+  }
+
+  .tabs {
+    margin-top: 28px;
+    margin-bottom: 32px;
+  }
+
+  .tab {
+    padding: 10px 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  body {
+    padding-top: 30px;
+  }
+
+  .grid {
+    gap: 25px 11px;
+  }
 
   .tagline {
-    margin: 2px 0 0; text-align: center; white-space: nowrap;
-    font-size: clamp(10px, 3.7vw, 21px); font-weight: 500; letter-spacing: .01em; line-height: 1.4;
-    color: #e5242f;
+    font-size: clamp(8.1px, 3.45vw, 14px);
   }
 
-  /* ---------- Instagram credit ---------- */
-  .credit { display: flex; justify-content: center; margin-top: 12px; }
+  .credit {
+    margin-top: 9px;
+  }
+
   .credit a {
-    display: inline-flex; align-items: center; gap: 8px;
-    color: var(--dim); text-decoration: none;
-    font-size: 14px; font-weight: 500;
-    padding: 6px 10px; border-radius: 8px;
-    transition: color .2s;
+    width: 31px;
+    height: 31px;
   }
-  .credit a:hover, .credit a:focus-visible { color: var(--text); }
-  .credit svg { width: 18px; height: 18px; display: block; }
 
-  /* ---------- Tabs ---------- */
-  .tabs {
-    display: flex; gap: 6px; width: fit-content;
-    margin: 30px auto 38px; padding: 5px;
-    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+  .credit svg {
+    width: 21px;
+    height: 21px;
   }
-  .tab {
-    display: inline-flex; align-items: center; gap: 9px;
-    border: 0; background: transparent; color: var(--dim);
-    font: 600 14px "Inter", sans-serif;
-    padding: 11px 22px; border-radius: 10px; cursor: pointer;
-    transition: background .25s, color .25s;
-  }
-  .tab svg { width: 17px; height: 17px; }
-  .tab:hover { color: var(--text); }
-  .tab[aria-selected="true"] { background: var(--red); color: #fff; }
-  .tab:focus-visible, .tile:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+}
 
-  /* ---------- Grid ---------- */
+@media (max-width: 360px) {
   .grid {
-    display: grid; gap: 34px 22px;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  }
-  .grid[hidden] { display: none; }
-  .tile {
-    display: flex; flex-direction: column; align-items: center; gap: 12px;
-    text-decoration: none; color: var(--dim);
-    transition: transform .3s ease, color .3s ease;
-  }
-  .avatar {
-    position: relative; width: 100%; aspect-ratio: 1;
-    border-radius: 18px; overflow: hidden;
-    display: grid; place-items: center;
-    background: var(--c1);
-    box-shadow: 0 10px 24px -14px rgba(0,0,0,.9);
-    transition: transform .3s ease, box-shadow .3s ease;
-  }
-  .avatar::after { /* soft top light */
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(180deg, rgba(255,255,255,.18), rgba(0,0,0,.18));
-    pointer-events: none;
-  }
-  .tile.site .avatar { background: linear-gradient(150deg, var(--c1), var(--c2)); }
-  .tile .avatar img {
-    width: 58%; height: 58%; object-fit: contain; position: relative; z-index: 1;
-    background: rgba(255,255,255,.95); padding: 9%; border-radius: 22%;
-    box-shadow: 0 6px 16px -4px rgba(0,0,0,.45);
-  }
-  .initials {
-    position: relative; z-index: 1; color: #fff;
-    font: 400 clamp(40px, 7vw, 58px) "Bebas Neue", sans-serif; letter-spacing: 1px;
-    text-shadow: 0 2px 10px rgba(0,0,0,.3);
-  }
-  .tile.app .avatar { border-radius: 30% 30% 30% 30% / 30%; background: var(--surface); }
-  .tile.app .avatar svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; }
-  .name {
-    font-size: 14px; font-weight: 600; text-align: center; line-height: 1.3;
-    overflow-wrap: anywhere;
-  }
-  a.tile:hover, a.tile:focus-visible { transform: translateY(-6px); color: #fff; }
-  a.tile:hover .avatar, a.tile:focus-visible .avatar {
-    transform: scale(1.05);
-    box-shadow: 0 18px 34px -12px var(--c1), 0 0 0 1px rgba(255,255,255,.14);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  /* ---------- Coming soon ---------- */
-  .tile.soon { cursor: default; }
-  .tile.soon .avatar { background: var(--surface); border: 1px dashed #3a3a3a; box-shadow: none; }
-  .tile.soon .avatar::after { display: none; }
-  .tile.soon .initials { color: #4a4a4a; }
-  .tile.soon .name { color: #5d5d5d; }
-  .badge {
-    position: absolute; z-index: 2; bottom: 9px; left: 50%; transform: translateX(-50%);
-    font-size: 10px; font-weight: 600; letter-spacing: .04em; white-space: nowrap;
-    color: var(--dim); background: #0c0c0c; border: 1px solid var(--line);
-    padding: 3px 8px; border-radius: 6px;
+  .tagline {
+    font-size: 8.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition: none !important;
   }
 
-  /* ---------- Cinematic intro (original NIGHTFLIX sequence, ~2.5s) ---------- */
-  .intro { display: none; }
-  .intro-on .intro {
-    position: fixed; inset: 0; z-index: 100; display: grid; place-content: center; justify-items: center;
-    background: #000; overflow: hidden; cursor: pointer;
-    transition: opacity .5s ease;
+  .intro {
+    display: none !important;
   }
-  .intro-on main { opacity: 0; }
-  main { transition: opacity .7s ease; }
-  .intro-leave main { opacity: 1; }
-  .intro-leave .intro { opacity: 0; pointer-events: none; }
-  .intro::before { /* red glow rising from the dark */
-    content: ""; position: absolute; left: 50%; top: 50%; width: 120vmax; height: 60vmax;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(ellipse at center, rgba(229,9,20,.38), rgba(229,9,20,.08) 35%, transparent 62%);
-    opacity: 0; animation: glow 2.2s ease-out .15s forwards;
-  }
-  .intro::after { /* faint film grain / dust */
-    content: ""; position: absolute; inset: -50%;
-    background-image: radial-gradient(rgba(255,255,255,.35) 1px, transparent 1.4px), radial-gradient(rgba(229,9,20,.4) 1px, transparent 1.4px);
-    background-size: 90px 90px, 140px 140px; background-position: 0 0, 40px 60px;
-    opacity: 0; animation: dust 2.4s linear forwards;
-  }
-  .intro-mark { position: relative; z-index: 1; opacity: 0; animation: reveal 1.3s cubic-bezier(.2,.7,.2,1) .35s forwards; }
-  .intro .wordmark {
-    margin: 0;
-    background:
-      linear-gradient(100deg, transparent 42%, rgba(255,255,255,.85) 50%, transparent 58%) 160% 0 / 250% 100% no-repeat,
-      linear-gradient(180deg, #ff2d37 0%, var(--red) 45%, var(--red-deep) 100%);
-    -webkit-background-clip: text; background-clip: text;
-    animation: sweep 1s ease-in-out 1.15s forwards;
-  }
-  .intro .tagline { position: relative; z-index: 1; margin-top: 14px; opacity: 0; animation: rise .7s ease 1.3s forwards; }
-  @keyframes glow { to { opacity: 1; } }
-  @keyframes dust { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: .35; } 100% { opacity: 0; transform: translateY(-60px); } }
-  @keyframes reveal { 0% { opacity: 0; transform: scale(1.14); filter: blur(14px); } 100% { opacity: 1; transform: scale(1); filter: blur(0); } }
-  @keyframes sweep { to { background-position: -60% 0, 0 0; } }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  @media (max-width: 560px) {
-    body { padding-top: 32px; }
-    .grid { grid-template-columns: repeat(3, 1fr); gap: 26px 14px; }
-    .avatar { border-radius: 16px; }
-    .name { font-size: 12.5px; }
-    .badge { font-size: 8.5px; padding: 2px 5px; bottom: 6px; }
-    .tab { padding: 10px 18px; }
+  .intro-on main {
+    opacity: 1;
   }
-  @media (max-width: 360px) { .grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .intro { display: none !important; } .intro-on main { opacity: 1; } }
+}
 </style>
 </head>
+
 <body>
+
+<!-- Cinematic first-load intro -->
 <div class="intro" id="intro" aria-hidden="true">
-  <div class="intro-mark"><span class="wordmark"><b>N</b>IGHTFLIX</span></div>
+  <div class="intro-mark">
+    <span class="wordmark"><b>M</b>AHIFLIX</span>
+  </div>
   <p class="tagline">Unlocking the Universe of Movies &amp; Web Series</p>
 </div>
+
 <main>
-  <h1 class="brand"><span class="wordmark" aria-label="NIGHTFLIX"><b>N</b>IGHTFLIX</span></h1>
+  <!-- Main brand -->
+  <h1 class="brand">
+    <span class="wordmark" aria-label="MahiFlix"><b>M</b>AHIFLIX</span>
+  </h1>
+
   <p class="tagline">Unlocking the Universe of Movies &amp; Web Series</p>
 
+  <!-- Instagram logo only -->
   <div class="credit">
-    <a href="https://www.instagram.com/mahimahfud/" target="_blank" rel="noopener noreferrer">
+    <a
+      href="https://www.instagram.com/mahimahfud/"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Instagram"
+      title="Instagram"
+    >
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <defs>
-          <radialGradient id="ig" cx="30%" cy="107%" r="130%">
-            <stop offset="0" stop-color="#fdf497"/><stop offset=".05" stop-color="#fdf497"/>
-            <stop offset=".45" stop-color="#fd5949"/><stop offset=".6" stop-color="#d6249f"/>
+          <radialGradient id="ig-gradient" cx="30%" cy="107%" r="130%">
+            <stop offset="0" stop-color="#fdf497"/>
+            <stop offset=".05" stop-color="#fdf497"/>
+            <stop offset=".45" stop-color="#fd5949"/>
+            <stop offset=".6" stop-color="#d6249f"/>
             <stop offset="1" stop-color="#285AEB"/>
           </radialGradient>
         </defs>
-        <rect width="24" height="24" rx="6.5" fill="url(#ig)"/>
-        <rect x="4.6" y="4.6" width="14.8" height="14.8" rx="4.4" fill="none" stroke="#fff" stroke-width="1.7"/>
-        <circle cx="12" cy="12" r="3.5" fill="none" stroke="#fff" stroke-width="1.7"/>
+        <rect width="24" height="24" rx="6.5" fill="url(#ig-gradient)"/>
+        <rect x="4.6" y="4.6" width="14.8" height="14.8" rx="4.4"
+              fill="none" stroke="#fff" stroke-width="1.7"/>
+        <circle cx="12" cy="12" r="3.5"
+                fill="none" stroke="#fff" stroke-width="1.7"/>
         <circle cx="16.4" cy="7.6" r="1.05" fill="#fff"/>
       </svg>
-      mahimahfud
     </a>
   </div>
 
+  <!-- Websites / Apps -->
   <div class="tabs" role="tablist" aria-label="Sections">
-    <button class="tab" role="tab" id="tab-websites" aria-controls="websites" aria-selected="true" data-target="websites">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>
+    <button
+      class="tab"
+      role="tab"
+      id="tab-websites"
+      aria-controls="websites"
+      aria-selected="true"
+      data-target="websites"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>
+      </svg>
       Websites
     </button>
-    <button class="tab" role="tab" id="tab-apps" aria-controls="apps" aria-selected="false" data-target="apps">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2" stroke-linecap="round"/></svg>
+
+    <button
+      class="tab"
+      role="tab"
+      id="tab-apps"
+      aria-controls="apps"
+      aria-selected="false"
+      data-target="apps"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+        <rect x="7" y="2.5" width="10" height="19" rx="2.5"/>
+        <path d="M11 18.5h2" stroke-linecap="round"/>
+      </svg>
       Apps
     </button>
   </div>
 
-  <section class="grid" id="websites" role="tabpanel" aria-labelledby="tab-websites"></section>
-  <section class="grid" id="apps" role="tabpanel" aria-labelledby="tab-apps" hidden></section>
+  <section
+    class="grid"
+    id="websites"
+    role="tabpanel"
+    aria-labelledby="tab-websites"
+  ></section>
+
+  <section
+    class="grid"
+    id="apps"
+    role="tabpanel"
+    aria-labelledby="tab-apps"
+    hidden
+  ></section>
 </main>
 
 <script>
-/* ==================================================================
-   ADD NEW ITEMS HERE — nothing else needs to be edited.
-   Each entry can be:
-     "https://example.com"                      -> name is detected automatically
-     { name: "My Site", url: "https://..." }    -> custom name
-     { name: "Soon", url: null }                -> Coming Soon (set a url later to activate)
-   ================================================================== */
+/* =====================================================================
+   DATA — ADD / REMOVE ITEMS HERE ONLY.
+
+   Website examples:
+     "https://example.com"
+     { name: "My Site", url: "https://example.com" }
+     { name: "Soon", url: null }
+
+   App examples:
+     { name: "My App", url: "https://example.com/app.apk" }
+
+   url: null = Coming Soon.
+   Changing null to a URL automatically activates the card.
+   ===================================================================== */
+
 const websites = [
   { name: "Plex", url: "https://watch.plex.tv/en-GB" },
   { name: "M4UHD", url: "https://m4uhd.vip/" },
@@ -287,43 +730,68 @@ const apps = [
 ];
 
 /* ---------------- Helpers ---------------- */
+
 const SVGNS = "http://www.w3.org/2000/svg";
 
-function hash(str) {                       // deterministic 32-bit hash
+function hash(str) {
   let h = 2166136261;
-  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
   return h >>> 0;
 }
 
-function getColorFromString(str) {         // same input -> same colors; always white-text safe
+function getColorFromString(str) {
   const h = hash(str);
   const hue = h % 360;
   return {
     c1: `hsl(${hue} 68% 44%)`,
-    c2: `hsl(${(hue + 38) % 360} 70% 32%)`,
-    hue
+    c2: `hsl(${(hue + 38) % 360} 70% 32%)`
   };
 }
 
 function hostOf(url) {
-  try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return ""; }
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return "";
+  }
 }
 
-function nameFromUrl(url) {                // "https://www.example.com/" -> "Example"
+function nameFromUrl(url) {
   const parts = hostOf(url).split(".");
-  const core = parts.length > 1 ? parts[parts.length - 2] : parts[0] || "Untitled";
+  const core = parts.length > 1
+    ? parts[parts.length - 2]
+    : parts[0] || "Untitled";
   return core.charAt(0).toUpperCase() + core.slice(1);
 }
 
-function normalize(entry) {                // accepts a string or an object
-  if (typeof entry === "string") return { name: nameFromUrl(entry), url: entry };
-  return { name: entry.name || (entry.url ? nameFromUrl(entry.url) : "Coming Soon"), url: entry.url || null };
+function normalize(entry) {
+  if (typeof entry === "string") {
+    return { name: nameFromUrl(entry), url: entry };
+  }
+
+  return {
+    name: entry.name || (entry.url ? nameFromUrl(entry.url) : "Coming Soon"),
+    url: entry.url || null
+  };
 }
 
 function initialsOf(name) {
-  const words = name.replace(/[^\p{L}\p{N}\s]/gu, "").trim().split(/\s+/).filter(Boolean);
+  const words = name
+    .replace(/[^\p{L}\p{N}\s]/gu, "")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
   if (!words.length) return "?";
-  return (words.length > 1 ? words[0][0] + words[1][0] : words[0].slice(0, 2)).toUpperCase();
+
+  return (
+    words.length > 1
+      ? words[0][0] + words[1][0]
+      : words[0].slice(0, 2)
+  ).toUpperCase();
 }
 
 function el(tag, cls, text) {
@@ -333,153 +801,322 @@ function el(tag, cls, text) {
   return n;
 }
 
-/* ---------------- Cartoon app avatar (generated SVG) ---------------- */
+/* ----------------------------------------------------------------------
+   Website logo loader
+
+   Browser-side JavaScript cannot reliably read arbitrary websites'
+   HTML metadata because of cross-origin restrictions. So the loader uses
+   several browser-safe logo/icon sources in priority order:
+
+   1. Official apple-touch-icon
+   2. Official favicon.ico
+   3. Google favicon service
+   4. DuckDuckGo favicon service
+   5. Deterministic initials fallback
+
+   This keeps the page lightweight and avoids injecting ads, tracking,
+   popups, iframes, or intermediate redirects.
+   ---------------------------------------------------------------------- */
+
+function logoSources(host) {
+  const encodedHost = encodeURIComponent(host);
+
+  /*
+    Use multiple independent logo providers. Some sites do not expose
+    apple-touch-icon/favicon at predictable paths, so a single source is
+    not enough. The first successful valid image wins.
+  */
+  return [
+    `https://${host}/apple-touch-icon.png`,
+    `https://${host}/apple-touch-icon-precomposed.png`,
+    `https://${host}/favicon.png`,
+    `https://${host}/favicon.ico`,
+
+    // Reliable remote favicon/logo fallbacks:
+    `https://icon.horse/icon/${encodedHost}`,
+    `https://www.google.com/s2/favicons?sz=256&domain=${encodedHost}`,
+    `https://icons.duckduckgo.com/ip3/${encodedHost}.ico`
+  ];
+}
+
+function websiteAvatar(item, active, idx) {
+  const avatar = el("span", "avatar");
+
+  const colors = getColorFromString(
+    active ? item.name + hostOf(item.url) : "soon" + idx
+  );
+
+  avatar.style.setProperty("--c1", colors.c1);
+  avatar.style.setProperty("--c2", colors.c2);
+
+  const fallback = () => {
+    avatar.replaceChildren(
+      el("span", "initials", initialsOf(item.name))
+    );
+  };
+
+  if (!active) {
+    fallback();
+    return avatar;
+  }
+
+  /* Initials are visible immediately while the real icon loads. */
+  fallback();
+
+  const host = hostOf(item.url);
+  const sources = logoSources(host);
+
+  (function tryNext(i) {
+    if (i >= sources.length) return;
+
+    const img = new Image();
+    img.alt = "";
+    img.decoding = "async";
+    img.loading = "lazy";
+    img.referrerPolicy = "no-referrer";
+
+    img.onload = () => {
+      /*
+        Some providers return a valid 1x1/placeholder image. Reject those
+        and continue to the next provider.
+      */
+      if (
+        !img.naturalWidth ||
+        !img.naturalHeight ||
+        img.naturalWidth < 16 ||
+        img.naturalHeight < 16
+      ) {
+        tryNext(i + 1);
+        return;
+      }
+
+      img.className = "site-logo";
+      avatar.replaceChildren(img);
+    };
+
+    img.onerror = () => tryNext(i + 1);
+    img.src = sources[i];
+  })(0);
+
+  return avatar;
+}
+
+/* ---------------- Generated cartoon app avatar ---------------- */
+
 function cartoonAvatar(seedStr) {
   const h = hash(seedStr);
+
   const hue = h % 360;
   const bg1 = `hsl(${hue} 80% 58%)`;
   const bg2 = `hsl(${(hue + 50) % 360} 85% 48%)`;
   const accent = `hsl(${(hue + 180) % 360} 90% 72%)`;
   const accent2 = `hsl(${(hue + 90) % 360} 90% 78%)`;
   const id = "g" + h;
-  const shape = (h >> 3) % 3;              // 0 circle, 1 blob, 2 star-burst
-  const eyes = (h >> 5) % 3;               // 0 dots, 1 wide, 2 happy arcs
-  const mouth = (h >> 7) % 3;              // 0 smile, 1 grin, 2 open
+
+  const shape = (h >> 3) % 3;
+  const eyes = (h >> 5) % 3;
+  const mouth = (h >> 7) % 3;
   const deco = (h >> 9) % 3;
 
   const decoSvg = [
-    `<circle cx="22" cy="24" r="9" fill="${accent}" opacity=".9"/><circle cx="82" cy="78" r="6" fill="${accent2}"/>`,
-    `<rect x="70" y="14" width="16" height="16" rx="4" fill="${accent}" transform="rotate(20 78 22)"/><circle cx="20" cy="82" r="7" fill="${accent2}"/>`,
-    `<path d="M20 18l4 8 8 2-8 3-4 8-3-8-8-3 8-2z" fill="${accent}"/><circle cx="84" cy="80" r="8" fill="${accent2}"/>`
+    `<circle cx="22" cy="24" r="9" fill="${accent}" opacity=".9"/>
+     <circle cx="82" cy="78" r="6" fill="${accent2}"/>`,
+
+    `<rect x="70" y="14" width="16" height="16" rx="4"
+       fill="${accent}" transform="rotate(20 78 22)"/>
+     <circle cx="20" cy="82" r="7" fill="${accent2}"/>`,
+
+    `<path d="M20 18l4 8 8 2-8 3-4 8-3-8-8-3 8-2z"
+       fill="${accent}"/>
+     <circle cx="84" cy="80" r="8" fill="${accent2}"/>`
   ][deco];
 
   const body = [
     `<circle cx="50" cy="54" r="30" fill="#fff" opacity=".96"/>`,
-    `<path d="M50 24c17 0 30 12 30 29S68 84 50 84 20 70 20 53s13-29 30-29z" fill="#fff" opacity=".96"/>`,
-    `<path d="M50 22l8 10 13-3-3 13 12 6-11 8 3 13-13-3-9 10-9-10-13 3 3-13-11-8 12-6-3-13 13 3z" fill="#fff" opacity=".96"/>`
+    `<path d="M50 24c17 0 30 12 30 29S68 84 50 84 20 70 20 53s13-29 30-29z"
+       fill="#fff" opacity=".96"/>`,
+    `<path d="M50 22l8 10 13-3-3 13 12 6-11 8 3 13-13-3-9 10-9-10-13 3 3-13-11-8 12-6-3-13 13 3z"
+       fill="#fff" opacity=".96"/>`
   ][shape];
 
   const ink = `hsl(${hue} 60% 18%)`;
+
   const eyeSvg = [
-    `<circle cx="40" cy="50" r="3.6" fill="${ink}"/><circle cx="60" cy="50" r="3.6" fill="${ink}"/>`,
-    `<ellipse cx="40" cy="50" rx="4.5" ry="6" fill="${ink}"/><ellipse cx="60" cy="50" rx="4.5" ry="6" fill="${ink}"/><circle cx="41.5" cy="48" r="1.6" fill="#fff"/><circle cx="61.5" cy="48" r="1.6" fill="#fff"/>`,
-    `<path d="M35 52q5-8 10 0M55 52q5-8 10 0" stroke="${ink}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`
+    `<circle cx="40" cy="50" r="3.6" fill="${ink}"/>
+     <circle cx="60" cy="50" r="3.6" fill="${ink}"/>`,
+
+    `<ellipse cx="40" cy="50" rx="4.5" ry="6" fill="${ink}"/>
+     <ellipse cx="60" cy="50" rx="4.5" ry="6" fill="${ink}"/>
+     <circle cx="41.5" cy="48" r="1.6" fill="#fff"/>
+     <circle cx="61.5" cy="48" r="1.6" fill="#fff"/>`,
+
+    `<path d="M35 52q5-8 10 0M55 52q5-8 10 0"
+       stroke="${ink}" stroke-width="3.2" fill="none"
+       stroke-linecap="round"/>`
   ][eyes];
+
   const mouthSvg = [
-    `<path d="M40 62q10 9 20 0" stroke="${ink}" stroke-width="3.2" fill="none" stroke-linecap="round"/>`,
+    `<path d="M40 62q10 9 20 0"
+       stroke="${ink}" stroke-width="3.2" fill="none"
+       stroke-linecap="round"/>`,
+
     `<path d="M38 61h24q-2 12-12 12T38 61z" fill="${ink}"/>`,
-    `<ellipse cx="50" cy="66" rx="6" ry="7" fill="${ink}"/><ellipse cx="50" cy="69" rx="3.4" ry="2.6" fill="hsl(350 80% 65%)"/>`
+
+    `<ellipse cx="50" cy="66" rx="6" ry="7" fill="${ink}"/>
+     <ellipse cx="50" cy="69" rx="3.4" ry="2.6"
+       fill="hsl(350 80% 65%)"/>`
   ][mouth];
-  const cheeks = `<circle cx="33" cy="61" r="4" fill="hsl(350 90% 75%)" opacity=".7"/><circle cx="67" cy="61" r="4" fill="hsl(350 90% 75%)" opacity=".7"/>`;
+
+  const cheeks =
+    `<circle cx="33" cy="61" r="4"
+       fill="hsl(350 90% 75%)" opacity=".7"/>
+     <circle cx="67" cy="61" r="4"
+       fill="hsl(350 90% 75%)" opacity=".7"/>`;
 
   const wrap = document.createElementNS(SVGNS, "svg");
   wrap.setAttribute("viewBox", "0 0 100 100");
   wrap.setAttribute("aria-hidden", "true");
-  wrap.innerHTML = `<defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${bg1}"/><stop offset="1" stop-color="${bg2}"/></linearGradient></defs>
-    <rect width="100" height="100" fill="url(#${id})"/>${decoSvg}${body}${eyeSvg}${cheeks}${mouthSvg}`;
+
+  wrap.innerHTML = `
+    <defs>
+      <linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${bg1}"/>
+        <stop offset="1" stop-color="${bg2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="100" height="100" fill="url(#${id})"/>
+    ${decoSvg}
+    ${body}
+    ${eyeSvg}
+    ${cheeks}
+    ${mouthSvg}
+  `;
+
   return wrap;
 }
 
-/* ---------------- Avatar builders ---------------- */
-function websiteAvatar(item, active, idx) {
+function appAvatar(item, active) {
   const avatar = el("span", "avatar");
-  const colors = getColorFromString(active ? item.name + hostOf(item.url) : "soon" + idx);
-  avatar.style.setProperty("--c1", colors.c1);
-  avatar.style.setProperty("--c2", colors.c2);
 
-  const fallback = () => avatar.replaceChildren(el("span", "initials", initialsOf(item.name)));
-  if (!active) { fallback(); return avatar; }
-
-  fallback();                                            // initials show until a real logo loads
-  const host = hostOf(item.url);
-  const sources = [                                      // [url, minimum accepted width]
-    [`https://${host}/apple-touch-icon.png`, 64],        // official high-res icon
-    [`https://${host}/favicon.ico`, 16],                 // official favicon
-    [`https://www.google.com/s2/favicons?sz=128&domain=${encodeURIComponent(host)}`, 33],
-    [`https://icons.duckduckgo.com/ip3/${host}.ico`, 16]
-  ];
-  (function tryNext(i) {
-    if (i >= sources.length) return;                     // keep initials as the final fallback
-    const img = new Image();
-    img.alt = "";
-    img.decoding = "async";
-    img.referrerPolicy = "no-referrer";   // many sites block hotlinks that send a referrer
-    img.onload = () => {
-      if (img.naturalWidth < sources[i][1]) return tryNext(i + 1);
-      avatar.replaceChildren(img);
-    };
-    img.onerror = () => tryNext(i + 1);
-    img.src = sources[i][0];
-  })(0);
-  return avatar;
-}
-
-function appAvatar(item, active, idx) {
-  const avatar = el("span", "avatar");
   if (!active) {
     avatar.append(el("span", "initials", "?"));
     return avatar;
   }
-  const c = getColorFromString(item.name);
+
+  const c = getColorFromString(item.name + hostOf(item.url));
   avatar.style.setProperty("--c1", c.c1);
+  avatar.style.setProperty("--c2", c.c2);
   avatar.append(cartoonAvatar(item.name + hostOf(item.url)));
+
   return avatar;
 }
 
 /* ---------------- Rendering ---------------- */
+
 function renderGrid(container, list, kind) {
   const frag = document.createDocumentFragment();
+
   list.map(normalize).forEach((item, idx) => {
-    const active = !!item.url;
-    const tile = el(active ? "a" : "div", `tile ${kind} ${active ? "" : "soon"}`.trim());
+    const active = Boolean(item.url);
+
+    const tile = el(
+      active ? "a" : "div",
+      `tile ${kind} ${active ? "" : "soon"}`.trim()
+    );
+
     if (active) {
       tile.href = item.url;
       tile.target = "_blank";
       tile.rel = "noopener noreferrer";
-      tile.setAttribute("aria-label", item.name);
+      tile.setAttribute("aria-label", `Open ${item.name}`);
     } else {
       tile.setAttribute("aria-disabled", "true");
     }
-    const avatar = kind === "site" ? websiteAvatar(item, active, idx) : appAvatar(item, active, idx);
+
+    const avatar =
+      kind === "site"
+        ? websiteAvatar(item, active, idx)
+        : appAvatar(item, active);
+
     if (active) {
-      const c = getColorFromString(item.name + hostOf(item.url));
+      const c = getColorFromString(
+        item.name + hostOf(item.url)
+      );
       tile.style.setProperty("--c1", c.c1);
     } else {
       avatar.append(el("span", "badge", "Coming Soon"));
     }
-    tile.append(avatar, el("span", "name", item.name));
+
+    tile.append(
+      avatar,
+      el("span", "name", item.name)
+    );
+
     frag.append(tile);
   });
+
   container.replaceChildren(frag);
 }
 
-renderGrid(document.getElementById("websites"), websites, "site");
-renderGrid(document.getElementById("apps"), apps, "app");
+renderGrid(
+  document.getElementById("websites"),
+  websites,
+  "site"
+);
+
+renderGrid(
+  document.getElementById("apps"),
+  apps,
+  "app"
+);
 
 /* ---------------- Intro animation ---------------- */
+
 (function intro() {
   const root = document.documentElement;
+
   if (!root.classList.contains("intro-on")) return;
-  try { sessionStorage.setItem("nf-intro", "1"); } catch (e) {}
+
+  try {
+    sessionStorage.setItem("mahiflix-intro", "1");
+  } catch (e) {}
+
   let done = false;
-  const finish = () => {                       // fade intro out, reveal the page, then clean up
-    if (done) return; done = true;
+
+  const finish = () => {
+    if (done) return;
+    done = true;
+
     root.classList.add("intro-leave");
-    setTimeout(() => root.classList.remove("intro-on", "intro-leave"), 700);
+
+    setTimeout(() => {
+      root.classList.remove("intro-on", "intro-leave");
+    }, 700);
   };
-  document.getElementById("intro").addEventListener("click", finish);   // tap to skip
+
+  document
+    .getElementById("intro")
+    .addEventListener("click", finish);
+
   setTimeout(finish, 2300);
 })();
 
 /* ---------------- Tabs ---------------- */
+
 const tabs = document.querySelectorAll(".tab");
-tabs.forEach(tab => tab.addEventListener("click", () => {
-  tabs.forEach(t => {
-    const on = t === tab;
-    t.setAttribute("aria-selected", on);
-    document.getElementById(t.dataset.target).hidden = !on;
+
+tabs.forEach(tab => {
+  tab.addEventListener("click", () => {
+    tabs.forEach(t => {
+      const selected = t === tab;
+      t.setAttribute("aria-selected", String(selected));
+
+      const panel = document.getElementById(t.dataset.target);
+      panel.hidden = !selected;
+    });
   });
-}));
+});
 </script>
+
 </body>
 </html>

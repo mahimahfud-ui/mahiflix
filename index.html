@@ -418,10 +418,11 @@
      ================================================================ */
 
   .tile.app .avatar {
-    border-radius:
-      30% 30% 30% 30% / 30%;
-
+    border-radius: 18px;
     background: var(--surface);
+    box-shadow:
+      0 10px 24px -14px rgba(0,0,0,.9),
+      0 0 0 1px rgba(255,255,255,.05);
   }
 
   .tile.app .avatar > svg {
@@ -505,6 +506,17 @@
 
     animation:
       appGlow 2.4s ease-in-out infinite;
+  }
+
+  .app-blink {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: appBlink 5.2s ease-in-out infinite;
+  }
+
+  @keyframes appBlink {
+    0%, 42%, 46%, 100% { transform: scaleY(1); }
+    44% { transform: scaleY(.08); }
   }
 
   @keyframes appFloat {
@@ -1844,545 +1856,93 @@ function websiteAvatar(
 
 function cartoonAvatar(seedStr) {
 
-  const h =
-    hash(seedStr);
+  const h = hash(seedStr);
+  const variant = h % 6;
+  const palettes = [
+    {bg1:"#ff6b35",bg2:"#991b1b",skin:"#f2b28d",hair:"#171717",shirt:"#202020",accent:"#ffd166"},
+    {bg1:"#2563eb",bg2:"#172554",skin:"#d89568",hair:"#3b2416",shirt:"#f5f5f5",accent:"#60a5fa"},
+    {bg1:"#7c3aed",bg2:"#3b0764",skin:"#f0b58f",hair:"#111827",shirt:"#111827",accent:"#c084fc"},
+    {bg1:"#16a34a",bg2:"#064e3b",skin:"#8d5524",hair:"#161616",shirt:"#facc15",accent:"#86efac"},
+    {bg1:"#db2777",bg2:"#831843",skin:"#e8a87c",hair:"#24140d",shirt:"#f8fafc",accent:"#f9a8d4"},
+    {bg1:"#0891b2",bg2:"#164e63",skin:"#c68642",hair:"#20150f",shirt:"#1e293b",accent:"#67e8f9"}
+  ];
+  const p = palettes[variant];
+  const id = "appAvatar" + h;
+  const blinkDelay = -((h >> 4) % 5);
+  const floatDelay = -((h >> 7) % 20) / 10;
+  const floatDuration = 3.2 + ((h >> 11) % 12) / 10;
 
-
-  const hue =
-    h % 360;
-
-
-  const bg1 =
-    `hsl(${hue} 82% 56%)`;
-
-
-  const bg2 =
-    `hsl(${(hue + 55) % 360} 82% 34%)`;
-
-
-  const accent =
-    `hsl(${(hue + 180) % 360} 95% 72%)`;
-
-
-  const accent2 =
-    `hsl(${(hue + 90) % 360} 95% 76%)`;
-
-
-  const ink =
-    `hsl(${hue} 55% 15%)`;
-
-
-  const id =
-    "app" + h;
-
-
-  const shape =
-    Math.abs(h >> 3) % 4;
-
-
-  const eyes =
-    Math.abs(h >> 5) % 3;
-
-
-  const mouth =
-    Math.abs(h >> 7) % 3;
-
-
-  const deco =
-    Math.abs(h >> 9) % 4;
-
-
-  const floatDuration =
-    2.8 +
-    (
-      Math.abs(h >> 11) % 18
-    ) / 10;
-
-
-  const rotateDuration =
-    5 +
-    (
-      Math.abs(h >> 13) % 25
-    ) / 10;
-
-
-  const pulseDuration =
-    2.2 +
-    (
-      Math.abs(h >> 15) % 15
-    ) / 10;
-
-
-  const floatDelay =
-    -(
-      Math.abs(h) % 20
-    ) / 10;
-
-
-  const rotateDelay =
-    -(
-      Math.abs(h >> 4) % 30
-    ) / 10;
-
-
-  const pulseDelay =
-    -(
-      Math.abs(h >> 8) % 20
-    ) / 10;
-
-
-  /* ---------------- Shapes ---------------- */
-
-  const shapes = [
-
-    `
-      <circle
-        cx="50"
-        cy="54"
-        r="31"
-        fill="#fff"
-        opacity=".97"
-      />
-    `,
-
-    `
-      <path
-        d="
-          M50 23
-          C68 23 80 36 79 53
-          C78 72 67 84 50 84
-          C32 84 20 72 21 53
-          C22 36 33 23 50 23Z
-        "
-        fill="#fff"
-        opacity=".97"
-      />
-    `,
-
-    `
-      <path
-        d="
-          M50 20
-          L59 30
-          L73 27
-          L70 41
-          L81 50
-          L70 58
-          L73 72
-          L59 69
-          L50 82
-          L41 69
-          L27 72
-          L30 58
-          L19 50
-          L30 41
-          L27 27
-          L41 30Z
-        "
-        fill="#fff"
-        opacity=".97"
-      />
-    `,
-
-    `
-      <path
-        d="
-          M50 20
-          C67 20 82 34 82 50
-          C82 67 69 82 50 82
-          C31 82 18 68 18 50
-          C18 34 32 20 50 20Z
-        "
-        fill="#fff"
-        opacity=".97"
-      />
-    `
-
+  const hair = [
+    \`<path d="M25 43C24 25 35 16 50 16C66 16 77 27 75 45L68 38C65 27 57 23 49 23C40 23 33 29 31 40Z" fill="\${p.hair}"/>\`,
+    \`<path d="M24 42C22 25 34 14 50 14C67 14 79 26 76 44L68 35C62 29 57 27 50 27C40 27 33 32 29 43Z" fill="\${p.hair}"/><path d="M28 30Q37 18 49 19Q62 18 72 31Q65 24 55 25Q41 25 28 30Z" fill="\${p.accent}" opacity=".9"/>\`,
+    \`<path d="M23 42C24 24 34 15 50 15C66 15 76 25 77 42L70 39C68 29 61 23 50 23C39 23 32 29 30 39Z" fill="\${p.hair}"/><circle cx="35" cy="24" r="6" fill="\${p.hair}"/><circle cx="48" cy="20" r="7" fill="\${p.hair}"/><circle cx="61" cy="24" r="6" fill="\${p.hair}"/>\`
   ];
 
-
-  /* ---------------- Eyes ---------------- */
-
-  const eyeSets = [
-
-    `
-      <circle
-        cx="40"
-        cy="50"
-        r="3.8"
-        fill="${ink}"
-      />
-
-      <circle
-        cx="60"
-        cy="50"
-        r="3.8"
-        fill="${ink}"
-      />
-    `,
-
-    `
-      <ellipse
-        cx="40"
-        cy="50"
-        rx="4.8"
-        ry="6"
-        fill="${ink}"
-      />
-
-      <ellipse
-        cx="60"
-        cy="50"
-        rx="4.8"
-        ry="6"
-        fill="${ink}"
-      />
-
-      <circle
-        cx="41.5"
-        cy="48"
-        r="1.6"
-        fill="#fff"
-      />
-
-      <circle
-        cx="61.5"
-        cy="48"
-        r="1.6"
-        fill="#fff"
-      />
-    `,
-
-    `
-      <path
-        d="M35 52Q40 43 45 52"
-        stroke="${ink}"
-        stroke-width="3.2"
-        fill="none"
-        stroke-linecap="round"
-      />
-
-      <path
-        d="M55 52Q60 43 65 52"
-        stroke="${ink}"
-        stroke-width="3.2"
-        fill="none"
-        stroke-linecap="round"
-      />
-    `
-
+  const glasses = [
+    "",
+    \`<g opacity=".96"><rect x="31" y="45" width="15" height="10" rx="4" fill="none" stroke="#111" stroke-width="2.5"/><rect x="54" y="45" width="15" height="10" rx="4" fill="none" stroke="#111" stroke-width="2.5"/><path d="M46 49H54" stroke="#111" stroke-width="2.5"/></g>\`,
+    \`<g opacity=".92"><rect x="30" y="45" width="17" height="9" rx="4" fill="#111" fill-opacity=".72"/><rect x="53" y="45" width="17" height="9" rx="4" fill="#111" fill-opacity=".72"/><path d="M47 49H53" stroke="#111" stroke-width="2.5"/></g>\`
   ];
 
-
-  /* ---------------- Mouth ---------------- */
-
-  const mouthSets = [
-
-    `
-      <path
-        d="M40 62Q50 71 60 62"
-        stroke="${ink}"
-        stroke-width="3.2"
-        fill="none"
-        stroke-linecap="round"
-      />
-    `,
-
-    `
-      <path
-        d="
-          M38 61
-          H62
-          Q60 72 50 72
-          Q40 72 38 61Z
-        "
-        fill="${ink}"
-      />
-    `,
-
-    `
-      <ellipse
-        cx="50"
-        cy="66"
-        rx="6"
-        ry="7"
-        fill="${ink}"
-      />
-
-      <ellipse
-        cx="50"
-        cy="69"
-        rx="3.4"
-        ry="2.6"
-        fill="hsl(350 80% 65%)"
-      />
-    `
-
+  const accessories = [
+    "",
+    \`<path d="M69 22L77 16L80 26L73 31Z" fill="\${p.accent}"/>\`,
+    \`<circle cx="23" cy="33" r="6" fill="\${p.accent}"/><circle cx="77" cy="33" r="6" fill="\${p.accent}"/>\`,
+    \`<path d="M50 10L54 17H46Z" fill="\${p.accent}"/>\`
   ];
 
+  const svg = document.createElementNS(SVGNS, "svg");
+  svg.setAttribute("viewBox", "0 0 100 100");
+  svg.setAttribute("aria-hidden", "true");
+  svg.classList.add("animated-app-avatar");
 
-  /* ---------------- Decorations ---------------- */
-
-  const decorations = [
-
-    `
-      <circle
-        cx="19"
-        cy="21"
-        r="10"
-        fill="${accent}"
-        opacity=".9"
-        class="app-deco app-float-a"
-      />
-
-      <circle
-        cx="84"
-        cy="80"
-        r="7"
-        fill="${accent2}"
-        class="app-deco app-float-b"
-      />
-    `,
-
-    `
-      <rect
-        x="70"
-        y="13"
-        width="18"
-        height="18"
-        rx="5"
-        fill="${accent}"
-        class="app-deco app-spin"
-      />
-
-      <circle
-        cx="18"
-        cy="82"
-        r="7"
-        fill="${accent2}"
-        class="app-deco app-float-a"
-      />
-    `,
-
-    `
-      <path
-        d="
-          M18 18
-          L22 27
-          L31 30
-          L22 34
-          L18 43
-          L14 34
-          L5 30
-          L14 27Z
-        "
-        fill="${accent}"
-        class="app-deco app-spin"
-      />
-
-      <circle
-        cx="84"
-        cy="80"
-        r="8"
-        fill="${accent2}"
-        class="app-deco app-float-b"
-      />
-    `,
-
-    `
-      <circle
-        cx="19"
-        cy="22"
-        r="8"
-        fill="${accent}"
-        class="app-deco app-pulse"
-      />
-
-      <rect
-        x="73"
-        y="74"
-        width="13"
-        height="13"
-        rx="4"
-        fill="${accent2}"
-        class="app-deco app-spin"
-      />
-    `
-
-  ];
-
-
-  /* ---------------- SVG ---------------- */
-
-  const svg =
-    document.createElementNS(
-      SVGNS,
-      "svg"
-    );
-
-
-  svg.setAttribute(
-    "viewBox",
-    "0 0 100 100"
-  );
-
-
-  svg.setAttribute(
-    "aria-hidden",
-    "true"
-  );
-
-
-  svg.classList.add(
-    "animated-app-avatar"
-  );
-
-
-  svg.innerHTML = `
-
+  svg.innerHTML = \`
     <defs>
-
-      <linearGradient
-        id="${id}"
-        x1="0"
-        y1="0"
-        x2="1"
-        y2="1"
-      >
-
-        <stop
-          offset="0"
-          stop-color="${bg1}"
-        />
-
-        <stop
-          offset="1"
-          stop-color="${bg2}"
-        />
-
+      <linearGradient id="\${id}-bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="\${p.bg1}"/><stop offset="1" stop-color="\${p.bg2}"/>
       </linearGradient>
-
-
-      <radialGradient
-        id="${id}-glow"
-        cx="50%"
-        cy="35%"
-        r="70%"
-      >
-
-        <stop
-          offset="0"
-          stop-color="#fff"
-          stop-opacity=".18"
-        />
-
-        <stop
-          offset="1"
-          stop-color="#fff"
-          stop-opacity="0"
-        />
-
+      <radialGradient id="\${id}-shine" cx="50%" cy="25%" r="75%">
+        <stop offset="0" stop-color="#fff" stop-opacity=".24"/><stop offset="1" stop-color="#000" stop-opacity=".18"/>
       </radialGradient>
-
-
-      <filter
-        id="${id}-shadow"
-        x="-30%"
-        y="-30%"
-        width="160%"
-        height="160%"
-      >
-
-        <feDropShadow
-          dx="0"
-          dy="4"
-          stdDeviation="4"
-          flood-color="#000"
-          flood-opacity=".35"
-        />
-
+      <filter id="\${id}-shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="4" stdDeviation="3.5" flood-color="#000" flood-opacity=".32"/>
       </filter>
-
     </defs>
 
+    <rect width="100" height="100" fill="url(#\${id}-bg)"/>
+    <rect width="100" height="100" fill="url(#\${id}-shine)"/>
 
-    <rect
-      width="100"
-      height="100"
-      fill="url(#${id})"
-    />
-
-
-    <rect
-      width="100"
-      height="100"
-      fill="url(#${id}-glow)"
-    />
-
-
-    <g
-      class="app-background-motion"
-      style="
-        animation-duration:${rotateDuration}s;
-        animation-delay:${rotateDelay}s;
-      "
-    >
-
-      ${decorations[deco]}
-
+    <g class="app-background-motion" style="animation-duration:7s;animation-delay:\${floatDelay}s">
+      <circle cx="12" cy="18" r="3" fill="#fff" opacity=".55"/>
+      <circle cx="88" cy="78" r="4" fill="\${p.accent}" opacity=".72"/>
+      <circle cx="83" cy="17" r="2" fill="#fff" opacity=".4"/>
     </g>
 
+    <g class="app-character-motion" filter="url(#\${id}-shadow)" style="animation-duration:\${floatDuration}s;animation-delay:\${floatDelay}s">
+      <ellipse cx="50" cy="91" rx="28" ry="13" fill="\${p.shirt}"/>
+      \${accessories[variant % accessories.length]}
+      \${hair[variant % hair.length]}
 
-    <g
-      class="app-character-motion"
-      style="
-        animation-duration:${floatDuration}s;
-        animation-delay:${floatDelay}s;
-      "
-      filter="url(#${id}-shadow)"
-    >
+      <path d="M28 47C28 34 37 26 50 26C63 26 72 34 72 47V58C72 71 63 80 50 80C37 80 28 71 28 58Z" fill="\${p.skin}"/>
+      <path d="M29 44C31 31 39 25 50 25C62 25 69 32 71 44C63 38 58 36 50 36C41 36 35 39 29 44Z" fill="\${p.hair}"/>
 
-      ${shapes[shape]}
-
-
-      <g
-        class="app-face-pulse"
-        style="
-          animation-duration:${pulseDuration}s;
-          animation-delay:${pulseDelay}s;
-        "
-      >
-
-        ${eyeSets[eyes]}
-
-        ${mouthSets[mouth]}
-
-
-        <circle
-          cx="33"
-          cy="61"
-          r="4"
-          fill="hsl(350 90% 75%)"
-          opacity=".72"
-        />
-
-        <circle
-          cx="67"
-          cy="61"
-          r="4"
-          fill="hsl(350 90% 75%)"
-          opacity=".72"
-        />
-
+      <g class="app-face-pulse">
+        <g class="app-blink" style="animation-delay:\${blinkDelay}s">
+          <ellipse cx="40" cy="50" rx="3.5" ry="4.2" fill="#151515"/>
+          <ellipse cx="60" cy="50" rx="3.5" ry="4.2" fill="#151515"/>
+          <circle cx="41" cy="49" r="1.1" fill="#fff"/><circle cx="61" cy="49" r="1.1" fill="#fff"/>
+        </g>
+        \${glasses[variant % glasses.length]}
+        <path d="M46 57Q50 59 54 57" stroke="#9b5f46" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+        <path d="M41 65Q50 72 59 65" stroke="#4a1f1b" stroke-width="2.7" fill="none" stroke-linecap="round"/>
+        <ellipse cx="34" cy="60" rx="4" ry="2.7" fill="#f18f8f" opacity=".35"/>
+        <ellipse cx="66" cy="60" rx="4" ry="2.7" fill="#f18f8f" opacity=".35"/>
       </g>
-
     </g>
-  `;
-
+  \`;
 
   return svg;
 }
-
 
 /* ================================================================
    APP AVATAR

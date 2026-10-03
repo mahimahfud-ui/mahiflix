@@ -10,6 +10,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+<link
+  rel="preload"
+  as="audio"
+  href="./vidssave.com%20Netflix%20New%20Logo%20Animation%202019%20128kbps.mp3"
+  type="audio/mpeg"
+>
+
 <script>
   /* ================================================================
      FIRST-PAINT INTRO DECISION
@@ -875,10 +882,10 @@
   }
 
   /* ================================================================
-     YOUTUBE AUDIO PLAYER
+     LOCAL INTRO AUDIO
      ================================================================ */
 
-  #youtubeIntroPlayer {
+  #introAudio {
     position: fixed;
 
     width: 1px;
@@ -1049,36 +1056,20 @@
 <body>
 
 <!-- ================================================================
-     HIDDEN YOUTUBE PLAYER
+     HIDDEN LOCAL AUDIO
      ================================================================ -->
 
-<div
-  id="youtubeIntroPlayer"
+<audio
+  id="introAudio"
+  preload="auto"
+  playsinline
   aria-hidden="true"
-></div>
-
-<script>
-  /* ================================================================
-     YOUTUBE IFRAME API
-     ================================================================ */
-
-  window.YT_API_READY = false;
-
-  function onYouTubeIframeAPIReady() {
-    window.YT_API_READY = true;
-
-    if (
-      typeof window.startMahiYouTubePlayer ===
-      "function"
-    ) {
-      window.startMahiYouTubePlayer();
-    }
-  }
-</script>
-
-<script
-  src="https://www.youtube.com/iframe_api"
-></script>
+>
+  <source
+    src="./vidssave.com%20Netflix%20New%20Logo%20Animation%202019%20128kbps.mp3"
+    type="audio/mpeg"
+  >
+</audio>
 
 
 <!-- ================================================================
@@ -1815,6 +1806,7 @@ function loadRealLogo(
       tryNext(
         i + 1
       );
+
     };
 
 
@@ -2571,6 +2563,7 @@ function renderGrid(
             "aria-disabled",
             "true"
           );
+
         }
 
 
@@ -2613,6 +2606,7 @@ function renderGrid(
               "Coming Soon"
             )
           );
+
         }
 
 
@@ -2664,7 +2658,7 @@ renderGrid(
 
 
 /* ================================================================
-   INTRO + YOUTUBE AUDIO SYNC
+   INTRO + LOCAL AUDIO SYNC
    ================================================================ */
 
 (function intro() {
@@ -2676,6 +2670,12 @@ renderGrid(
   const introEl =
     document.getElementById(
       "intro"
+    );
+
+
+  const audio =
+    document.getElementById(
+      "introAudio"
     );
 
 
@@ -2698,205 +2698,49 @@ renderGrid(
   } catch (e) {}
 
 
-  const VIDEO_ID =
-    "GV3HUDMQ-F8";
-
-
-  /*
-    Source video timing.
-    Intro is aligned to approximately
-    four seconds.
-  */
-
   const INTRO_DURATION =
     4000;
-
-
-  let player =
-    null;
-
-
-  let playerReady =
-    false;
-
-
-  let soundStarted =
-    false;
 
 
   let done =
     false;
 
 
-  /* ============================================================
-     YOUTUBE PLAYER INITIALIZER
-     ============================================================ */
-
-  function createPlayer() {
-
-    if (
-      typeof YT === "undefined" ||
-      typeof YT.Player === "undefined"
-    ) {
-
-      setTimeout(
-        createPlayer,
-        100
-      );
-
-      return;
-    }
-
-
-    if (player) {
-      return;
-    }
-
-
-    player =
-      new YT.Player(
-        "youtubeIntroPlayer",
-        {
-
-          videoId:
-            VIDEO_ID,
-
-          width:
-            "1",
-
-          height:
-            "1",
-
-          playerVars: {
-
-            autoplay: 1,
-
-            controls: 0,
-
-            disablekb: 1,
-
-            fs: 0,
-
-            iv_load_policy: 3,
-
-            modestbranding: 1,
-
-            playsinline: 1,
-
-            rel: 0,
-
-            start: 0,
-
-            end: 4,
-
-            origin:
-              window.location.origin
-
-          },
-
-          events: {
-
-            onReady:
-              handlePlayerReady,
-
-            onStateChange:
-              handlePlayerState,
-
-            onError:
-              handlePlayerError
-
-          }
-
-        }
-      );
-  }
-
-
-  window.startMahiYouTubePlayer =
-    createPlayer;
+  let audioStarted =
+    false;
 
 
   /* ============================================================
-     PLAYER READY
+     AUDIO PREPARATION
      ============================================================ */
 
-  function handlePlayerReady(event) {
+  if (audio) {
 
-    playerReady =
-      true;
+    audio.volume =
+      1;
 
+    audio.currentTime =
+      0;
 
     try {
 
-      event.target.seekTo(
-        0,
-        true
-      );
-
-      event.target.setVolume(
-        100
-      );
-
-      event.target.unMute();
-
-      event.target.playVideo();
+      audio.load();
 
     } catch (e) {}
+
   }
 
 
   /* ============================================================
-     PLAYER STATE
-     ============================================================ */
-
-  function handlePlayerState(event) {
-
-    if (
-      event.data ===
-      YT.PlayerState.PLAYING
-    ) {
-
-      soundStarted =
-        true;
-    }
-
-
-    if (
-      event.data ===
-      YT.PlayerState.ENDED
-    ) {
-
-      finish();
-    }
-  }
-
-
-  /* ============================================================
-     PLAYER ERROR
-     ============================================================ */
-
-  function handlePlayerError() {
-
-    /*
-      Visual intro continues even if
-      YouTube playback is unavailable.
-    */
-
-    soundStarted =
-      false;
-  }
-
-
-  /* ============================================================
-     MANUAL PLAY / AUTOPLAY FALLBACK
+     PLAY AUDIO
      ============================================================ */
 
   function tryPlaySound() {
 
     if (
-      !player ||
-      !playerReady ||
-      soundStarted
+      !audio ||
+      audioStarted ||
+      done
     ) {
       return;
     }
@@ -2904,55 +2748,74 @@ renderGrid(
 
     try {
 
-      player.seekTo(
-        0,
-        true
-      );
+      audio.currentTime =
+        0;
 
-      player.setVolume(
-        100
-      );
 
-      player.unMute();
+      const playPromise =
+        audio.play();
 
-      player.playVideo();
+
+      if (
+        playPromise &&
+        typeof playPromise.then ===
+        "function"
+      ) {
+
+        playPromise
+          .then(() => {
+
+            audioStarted =
+              true;
+
+          })
+          .catch(() => {
+
+            /*
+              Chrome / browser autoplay
+              policy may block unmuted audio.
+              User interaction below will
+              unlock playback.
+            */
+
+          });
+
+      } else {
+
+        audioStarted =
+          true;
+
+      }
 
     } catch (e) {}
-  }
-
-
-  /*
-    API already loaded?
-  */
-
-  if (
-    window.YT_API_READY
-  ) {
-
-    createPlayer();
 
   }
 
 
-  /*
-    Try once immediately too.
-  */
+  /* ============================================================
+     START IMMEDIATELY
+     ============================================================ */
 
-  createPlayer();
+  tryPlaySound();
 
 
-  /*
-    Browser autoplay fallback.
-    If Chrome blocks sound on page load,
-    interaction unlocks the audio.
-  */
+  /* ============================================================
+     AUTOPLAY UNLOCK
+     ============================================================ */
 
-  const unlockSound =
-    () => {
+  function unlockSound() {
 
-      tryPlaySound();
+    if (
+      audioStarted ||
+      done
+    ) {
+      return;
+    }
 
-    };
+
+    tryPlaySound();
+
+  }
 
 
   window.addEventListener(
@@ -2974,6 +2837,30 @@ renderGrid(
   );
 
 
+  window.addEventListener(
+    "touchstart",
+    unlockSound,
+    {
+      once: true,
+      passive: true
+    }
+  );
+
+
+  /* ============================================================
+     AUDIO ENDED
+     ============================================================ */
+
+  if (audio) {
+
+    audio.addEventListener(
+      "ended",
+      finish
+    );
+
+  }
+
+
   /* ============================================================
      FINISH INTRO
      ============================================================ */
@@ -2989,29 +2876,27 @@ renderGrid(
       true;
 
 
-    /*
-      Stop YouTube playback
-    */
+    /* ----------------------------------------------------------
+       Stop audio
+       ---------------------------------------------------------- */
 
     try {
 
-      if (player) {
+      if (audio) {
 
-        player.pauseVideo();
+        audio.pause();
 
-        player.seekTo(
-          0,
-          true
-        );
+        audio.currentTime =
+          0;
 
       }
 
     } catch (e) {}
 
 
-    /*
-      Fade intro
-    */
+    /* ----------------------------------------------------------
+       Fade intro
+       ---------------------------------------------------------- */
 
     root.classList.add(
       "intro-leave"
@@ -3029,12 +2914,13 @@ renderGrid(
       },
       700
     );
+
   }
 
 
-  /*
-    Click/tap to skip.
-  */
+  /* ============================================================
+     CLICK / TAP TO SKIP
+     ============================================================ */
 
   introEl.addEventListener(
     "click",
@@ -3042,9 +2928,9 @@ renderGrid(
   );
 
 
-  /*
-    Exact 4-second visual/audio window.
-  */
+  /* ============================================================
+     EXACT 4-SECOND VISUAL WINDOW
+     ============================================================ */
 
   setTimeout(
     finish,

@@ -1614,154 +1614,167 @@ function el(
    WEBSITE LOGO FETCHER
    ================================================================ */
 
+function brandedLogoDataUri(item, host) {
+  const labels = {
+    "moviesfree.cv": {
+      title: "MoviesTV",
+      subtitle: "MOVIES"
+    },
+    "netout.pages.dev": {
+      title: "NETOUT",
+      subtitle: "STREAMING"
+    }
+  };
+
+  const brand = labels[host];
+  if (!brand) return null;
+
+  const title = brand.title.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const subtitle = brand.subtitle.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  const svg = [
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">',
+    '<rect width="512" height="512" rx="86" fill="#141414"/>',
+    '<rect x="44" y="44" width="424" height="424" rx="72" fill="#0b0b0b" stroke="#262626" stroke-width="8"/>',
+    '<text x="256" y="276" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="72" font-weight="800" letter-spacing="2" fill="#ffffff">' + title + '</text>',
+    '<text x="256" y="332" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="25" font-weight="700" letter-spacing="7" fill="#e50914">' + subtitle + '</text>',
+    '</svg>'
+  ].join("");
+
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
 function loadRealLogo(
   avatar,
   item,
   fallbackElement
 ) {
-
-  const host =
-    hostOf(item.url);
-
+  const host = hostOf(item.url);
 
   if (!host) {
-
     fallbackElement();
-
     return;
   }
 
+  const encodedHost = encodeURIComponent(host);
 
-  const encodedHost =
-    encodeURIComponent(host);
-
-
-  const directLogoHosts = new Set([
+  const reliableLogoHosts = new Set([
     "techvyro-movies.onrender.com",
     "moviesfree.cv",
     "netout.pages.dev"
   ]);
 
-  const sources = [
+  const sources = reliableLogoHosts.has(host)
+    ? [
+        ...(host === "techvyro-movies.onrender.com"
+          ? [
+              "https://www.techvyro.in/logo.jpg",
+              "https://techvyro-movies.onrender.com/apple-touch-icon.png",
+              "https://techvyro-movies.onrender.com/favicon.png",
+              "https://techvyro-movies.onrender.com/favicon.ico"
+            ]
+          : [
+              "https://" + host + "/apple-touch-icon.png",
+              "https://" + host + "/apple-touch-icon-precomposed.png",
+              "https://" + host + "/favicon.png",
+              "https://" + host + "/favicon.ico"
+            ]),
 
-    /*
-      Direct Google favicon — prioritized for sites
-      whose favicon is not reliably detected by the
-      normal source order.
-    */
+        "https://icons.duckduckgo.com/ip3/" + encodedHost + ".ico",
 
-    ...(directLogoHosts.has(host)
-      ? [
-          `https://www.google.com/s2/favicons?sz=256&domain=${encodedHost}`,
-          `https://icons.duckduckgo.com/ip3/${encodedHost}.ico`
-        ]
-      : []),
+        "https://www.google.com/s2/favicons?sz=256&domain_url=" +
+          encodeURIComponent(item.url),
 
-    /*
-      Primary:
-      Google favicon
-    */
+        "https://www.google.com/s2/favicons?sz=256&domain=" +
+          encodedHost
+      ]
+    : [
+        ...(new Set([
+          "techvyro-movies.onrender.com",
+          "moviesfree.cv",
+          "netout.pages.dev"
+        ]).has(host)
+          ? [
+              "https://www.google.com/s2/favicons?sz=256&domain=" +
+                encodedHost,
+              "https://icons.duckduckgo.com/ip3/" +
+                encodedHost +
+                ".ico"
+            ]
+          : []),
 
-    `https://www.google.com/s2/favicons?sz=128&domain=${encodedHost}`,
+        "https://www.google.com/s2/favicons?sz=128&domain=" +
+          encodedHost,
 
-    /*
-      Secondary:
-      DuckDuckGo
-    */
+        "https://icons.duckduckgo.com/ip3/" +
+          encodedHost +
+          ".ico",
 
-    `https://icons.duckduckgo.com/ip3/${encodedHost}.ico`,
+        "https://" + host + "/apple-touch-icon.png",
+        "https://" + host + "/apple-touch-icon-precomposed.png",
+        "https://" + host + "/favicon.png",
+        "https://" + host + "/favicon.ico",
 
-    /*
-      Official site icons
-    */
+        "https://www.google.com/s2/favicons?sz=256&domain=" +
+          encodedHost
+      ];
 
-    `https://${host}/apple-touch-icon.png`,
+  let finished = false;
 
-    `https://${host}/apple-touch-icon-precomposed.png`,
+  function finishWithBrandFallback() {
+    if (finished) return;
 
-    `https://${host}/favicon.png`,
+    const dataUri = brandedLogoDataUri(item, host);
 
-    `https://${host}/favicon.ico`,
-
-    /*
-      Final large Google fallback
-    */
-
-    `https://www.google.com/s2/favicons?sz=256&domain=${encodedHost}`
-
-  ];
-
-
-  let finished =
-    false;
-
-
-  function tryNext(i) {
-
-    if (
-      finished ||
-      i >= sources.length
-    ) {
-
-      fallbackElement();
-
+    if (dataUri) {
+      const img = new Image();
+      img.alt = "";
+      img.decoding = "async";
+      img.className = "site-logo";
+      img.onload = () => {
+        if (finished) return;
+        finished = true;
+        avatar.replaceChildren(img);
+      };
+      img.onerror = () => fallbackElement();
+      img.src = dataUri;
       return;
     }
 
+    fallbackElement();
+  }
 
-    const img =
-      new Image();
+  function tryNext(i) {
+    if (finished) return;
 
+    if (i >= sources.length) {
+      finishWithBrandFallback();
+      return;
+    }
 
-    img.alt =
-      "";
+    const img = new Image();
 
-
-    img.decoding =
-      "async";
-
-
-    img.referrerPolicy =
-      "no-referrer";
-
+    img.alt = "";
+    img.decoding = "async";
+    img.referrerPolicy = "no-referrer";
 
     img.onload = () => {
-
       if (!img.naturalWidth || !img.naturalHeight) {
-
         tryNext(i + 1);
-
         return;
       }
 
-
-      finished =
-        true;
-
-
-      img.className =
-        "site-logo";
-
-
-      avatar.replaceChildren(
-        img
-      );
+      finished = true;
+      img.className = "site-logo";
+      avatar.replaceChildren(img);
     };
-
 
     img.onerror = () => {
-
-      tryNext(
-        i + 1
-      );
-
+      tryNext(i + 1);
     };
 
-
-    img.src =
-      sources[i];
+    img.src = sources[i];
   }
-
 
   tryNext(0);
 }

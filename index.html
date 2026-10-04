@@ -182,25 +182,6 @@ function rowHTML(title,items,opts){
   return "<section class='row "+(top?"top10 ":"")+"row-section' data-row='"+clean(title.toLowerCase())+"'><div class='row-head'><h2>"+clean(title)+"</h2><span class='row-note'>"+clean(note)+"</span></div><div class='rail'><button class='arrow l' aria-label='Scroll left'>&#8249;</button><div class='track'>"+items.map(function(it,i){return card(it,i,top)}).join("")+"</div><button class='arrow r' aria-label='Scroll right'>&#8250;</button></div></section>";
 }
 
-var top10=[].concat(S).sort(function(a,b){return (a.ads-b.ads)||((b.score||0)-(a.score||0))}).slice(0,10);
-function bucket(arr,n){return arr.filter(function(x){return x.ads===n}).sort(function(a,b){return (b.score||0)-(a.score||0)})}
-function renderView(type){
-  var el=document.getElementById(type==="sites"?"sitesView":"appsView");
-  var data=type==="sites"?S:A;
-  var html="";
-  if(type==="sites"){
-    html+=rowHTML("Most Visited · Top 10",top10,{top:true,note:"Ranked for popularity + low-ad experience + smooth UI + language variety"});
-  }
-  var fresh=data.filter(function(x){return x.new}).sort(function(a,b){return b.score-a.score});
-  html+=rowHTML("New on MahiFlix",fresh,{note:"Recently added platforms"});
-  html+=rowHTML("No / Minimal Ads",bucket(data,0),{note:"Best clean viewing experience"});
-  html+=rowHTML("Some Ads",bucket(data,1),{note:"Usually lighter interruptions"});
-  html+=rowHTML("Ad-Supported",bucket(data,2),{note:"Free / heavier ad-supported platforms"});
-  html+=rowHTML(type==="sites"?"All Websites":"All Apps",data.slice().sort(function(a,b){return b.score-a.score}),{note:"Exact platform names"});
-  el.innerHTML=html;
-}
-renderView("sites");renderView("apps");
-
 function setHero(type){
   var featured=type==="sites"?top10[0]:A.slice().sort(function(a,b){return b.score-a.score})[0];
   document.getElementById("heroKind").textContent=type==="sites"?"GLOBAL STREAMING":"MOBILE APPS";

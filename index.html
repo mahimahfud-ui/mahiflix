@@ -20,16 +20,16 @@ nav{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;jus
 nav.solid{background:rgba(20,20,20,.98);box-shadow:0 8px 30px rgba(0,0,0,.18)}nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-size:14px}nav ul a{color:#ddd}nav ul a.on,nav ul a:hover{color:#fff;font-weight:700}
 .nav-tools{position:absolute;right:4%;display:flex;align-items:center;gap:8px}.search{display:flex;align-items:center;border:1px solid transparent;padding:6px 8px}.search.open{border-color:#fff;background:#090909}.search button{border:0;background:none;color:#fff;display:grid;place-items:center;padding:0}.search input{width:0;opacity:0;border:0;outline:0;background:none;color:#fff;transition:.2s}.search.open input{width:180px;opacity:1;margin-left:8px}
 .hero{position:relative;min-height:76vh;display:flex;align-items:flex-end;padding:110px 4% 10vh;background:radial-gradient(ellipse at 78% 24%,rgba(229,9,20,.5),transparent 34%),linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.18) 76%),linear-gradient(0deg,var(--bg),transparent 48%),#25070a}
-.hero-in{max-width:760px;width:100%;margin:0 auto;text-align:center}.hero-meta,.btns{justify-content:center}.hero h1{font:400 clamp(64px,11vw,118px)/.9 "Bebas Neue",Impact,sans-serif;margin:12px 0 16px;letter-spacing:.015em;text-shadow:0 4px 20px rgba(0,0,0,.6)}.hero p{font-size:clamp(14px,1.7vw,19px);line-height:1.5;color:#eee;max-width:650px;margin:0 0 24px}.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:99px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);font-size:11px;font-weight:700;color:#e8e8e8}.pill.green{color:#9ef0b1}.pill.yellow{color:#ffe18a}.pill.red{color:#ff9a9f}
+.hero-in{max-width:760px;width:100%;margin:0 auto;text-align:center}.hero-meta,.btns{justify-content:center}.hero h1{font:400 clamp(64px,11vw,118px)/.9 "Bebas Neue",Impact,sans-serif;margin:0 0 12px;letter-spacing:.015em;text-shadow:0 4px 20px rgba(0,0,0,.6)}.hero p{font-size:clamp(14px,1.7vw,19px);line-height:1.5;color:#eee;max-width:650px;margin:0 auto 16px}.hero-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:99px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);font-size:11px;font-weight:700;color:#e8e8e8}.pill.green{color:#9ef0b1}.pill.yellow{color:#ffe18a}.pill.red{color:#ff9a9f}
 .btns{display:flex;gap:10px;flex-wrap:wrap}.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:4px;padding:11px 24px;font-weight:800;font-size:15px}.btn.play{background:#fff;color:#000}.btn.info{background:rgba(109,109,110,.72);color:#fff}.btn svg{width:20px;height:20px}
 
 .mode-wrap{position:relative;z-index:15;margin:-34px 4% 28px;display:flex;flex-direction:column;align-items:center}.mode-switch{display:flex;width:max-content;max-width:100%;padding:5px;background:rgba(36,36,36,.94);border:1px solid #404040;border-radius:13px;box-shadow:0 16px 30px rgba(0,0,0,.35)}.mode{border:0;background:transparent;color:#999;padding:12px 22px;border-radius:9px;font-weight:800;font-size:13px;letter-spacing:.04em}.mode.active{background:var(--red);color:#fff}.legend{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}.legend span{font-size:10px;color:#8f8f8f}
 main{position:relative;z-index:2;padding-bottom:60px}.view{display:none}.view.active{display:block}
 .row{margin:0 0 30px}.row-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:0 4% 10px}.row h2{margin:0;font-size:20px;font-weight:800}.row-note{font-size:11px;color:#757575}.rail{position:relative}.track{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:38px 4% 62px;margin:-38px 0 -62px}.arrow{display:none}
-.card{position:relative;cursor:pointer;flex:0 0 clamp(165px,19vw,280px);aspect-ratio:16/9;border-radius:4px;background:linear-gradient(140deg,var(--c1),var(--c2));display:grid;place-items:center;overflow:visible;scroll-snap-align:start;transition:transform .28s .08s,box-shadow .28s .08s;isolation:isolate}.card.logo-card img{position:relative;z-index:2;width:56%;max-height:74%;object-fit:contain;background:#000;padding:8px;border-radius:14px;box-shadow:0 7px 18px rgba(0,0,0,.32)}.initials{font:400 clamp(34px,5vw,58px)/1 "Bebas Neue";text-shadow:0 3px 12px rgba(0,0,0,.45)}.cap{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:26px 10px 9px;background:linear-gradient(0deg,rgba(0,0,0,.88),transparent);font-size:13px;font-weight:800}.more{position:absolute;left:0;right:0;top:100%;z-index:30;background:#181818;padding:11px 12px 13px;border-radius:0 0 5px 5px;opacity:0;pointer-events:none;box-shadow:0 18px 34px rgba(0,0,0,.65);transition:.18s}.actions{display:flex;gap:7px;margin-bottom:8px}.round{width:32px;height:32px;border:1px solid #555;border-radius:50%;background:#2a2a2a;color:#fff;display:grid;place-items:center}.round.go{background:#fff;color:#000;border-color:#fff}.round svg{width:14px;height:14px}.more b{display:block;font-size:13px;margin-bottom:4px}.more p{margin:0;color:#a8a8a8;font-size:11px;line-height:1.38}.more .lang{color:var(--green);font-weight:700;margin-top:5px}.ad{position:absolute;top:8px;right:8px;z-index:8;padding:3px 6px;border-radius:3px;background:rgba(0,0,0,.67);font-size:9px;font-weight:800}.a0{color:#9ef0b1}.a1{color:#ffe18a}.a2{color:#ff9b9f}.badge{position:absolute;top:8px;left:8px;z-index:8;background:var(--red);padding:3px 6px;border-radius:3px;font-size:9px;font-weight:900}.card.live:hover,.card.live:focus-within{transform:scale(1.28);z-index:20;box-shadow:0 20px 45px rgba(0,0,0,.7)}.card.live:hover .cap,.card.live:focus-within .cap{display:none}.card.live:hover .more,.card.live:focus-within .more{opacity:1;pointer-events:auto}
-.top10 .track{padding-left:4%}.top10 .card{aspect-ratio:2/3;overflow:visible}.top10 .num{position:absolute;right:100%;bottom:0;z-index:-1;margin-right:-14px;font:400 clamp(155px,19vw,260px)/.78 "Bebas Neue";color:#151515;-webkit-text-stroke:3px #5a5a5a;pointer-events:none}.top10 .card.logo-card img{width:62%;max-height:48%}.top10 .cap{padding-bottom:11px}
+.card{position:relative;cursor:pointer;flex:0 0 clamp(165px,19vw,280px);aspect-ratio:16/9;border-radius:4px;background:linear-gradient(140deg,var(--c1),var(--c2));display:grid;place-items:center;overflow:visible;scroll-snap-align:start;transition:transform .28s .08s,box-shadow .28s .08s;isolation:isolate}.card.logo-card img{position:relative;z-index:2;width:68%;max-height:82%;object-fit:contain;background:#000;padding:8px;border-radius:14px;box-shadow:0 7px 18px rgba(0,0,0,.32)}.initials{font:400 clamp(34px,5vw,58px)/1 "Bebas Neue";text-shadow:0 3px 12px rgba(0,0,0,.45)}.cap{position:absolute;left:0;right:0;bottom:0;z-index:4;padding:26px 10px 9px;background:linear-gradient(0deg,rgba(0,0,0,.88),transparent);font-size:13px;font-weight:800}.more{position:absolute;left:0;right:0;top:100%;z-index:30;background:#181818;padding:11px 12px 13px;border-radius:0 0 5px 5px;opacity:0;pointer-events:none;box-shadow:0 18px 34px rgba(0,0,0,.65);transition:.18s}.actions{display:flex;gap:7px;margin-bottom:8px}.round{width:32px;height:32px;border:1px solid #555;border-radius:50%;background:#2a2a2a;color:#fff;display:grid;place-items:center}.round.go{background:#fff;color:#000;border-color:#fff}.round svg{width:14px;height:14px}.more b{display:block;font-size:13px;margin-bottom:4px}.more p{margin:0;color:#a8a8a8;font-size:11px;line-height:1.38}.more .lang{color:var(--green);font-weight:700;margin-top:5px}.ad{position:absolute;top:8px;right:8px;z-index:8;padding:3px 6px;border-radius:3px;background:rgba(0,0,0,.67);font-size:9px;font-weight:800}.a0{color:#9ef0b1}.a1{color:#ffe18a}.a2{color:#ff9b9f}.badge{position:absolute;top:8px;left:8px;z-index:8;background:var(--red);padding:3px 6px;border-radius:3px;font-size:9px;font-weight:900}.card.live:hover,.card.live:focus-within{transform:scale(1.28);z-index:20;box-shadow:0 20px 45px rgba(0,0,0,.7)}.card.live:hover .cap,.card.live:focus-within .cap{display:none}.card.live:hover .more,.card.live:focus-within .more{opacity:1;pointer-events:auto}
+.top10 .track{padding-left:4%}.top10 .card{aspect-ratio:2/3;overflow:visible}.top10 .num{position:absolute;right:100%;bottom:0;z-index:-1;margin-right:-14px;font:400 clamp(155px,19vw,260px)/.78 "Bebas Neue";color:#151515;-webkit-text-stroke:3px #5a5a5a;pointer-events:none}.top10 .card.logo-card img{width:74%;max-height:56%}.top10 .cap{padding-bottom:11px}
 .section-divider{height:1px;background:linear-gradient(90deg,transparent,#333,transparent);margin:12px 4% 28px}.empty{text-align:center;color:#888;padding:100px 4%;display:none}
-footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .links{display:flex;justify-content:center;gap:18px;margin-bottom:11px}footer a{color:#eee}.hero-in .ig-link{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 14px}.hero-in .ig-link svg{width:30px;height:30px;transition:.2s}.hero-in .ig-link:hover svg{transform:scale(1.08)}.ig-link{display:grid;place-items:center;width:30px;height:30px;margin:4px auto 14px;color:#fff}.ig-link svg{width:22px;height:22px;transition:.2s}.ig-link:hover svg{transform:scale(1.08);color:#e1306c}
+footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .links{display:flex;justify-content:center;gap:18px;margin-bottom:11px}footer a{color:#eee}.hero-in .ig-link{display:grid;place-items:center;width:42px;height:42px;margin:2px auto 18px}.hero-in .ig-link svg{width:36px;height:36px;transition:.2s}.hero-in .ig-link:hover svg{transform:scale(1.08)}.ig-link{display:grid;place-items:center;width:30px;height:30px;margin:4px auto 14px;color:#fff}.ig-link svg{width:22px;height:22px;transition:.2s}.ig-link:hover svg{transform:scale(1.08);color:#e1306c}
 
 .intro{display:none}.intro-on .intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#000;cursor:pointer;transition:opacity .55s}.intro-on nav,.intro-on .hero,.intro-on .mode-wrap,.intro-on main,.intro-on footer{opacity:0}.intro-leave nav,.intro-leave .hero,.intro-leave .mode-wrap,.intro-leave main,.intro-leave footer{opacity:1}.intro-leave .intro{opacity:0;pointer-events:none}.intro .intro-logo{font:400 clamp(78px,16vw,160px)/1 "Bebas Neue";color:var(--red);letter-spacing:.04em;transform:scaleY(1.14);opacity:0;animation:rev 1.4s cubic-bezier(.2,.7,.2,1) .12s forwards;text-shadow:0 0 40px rgba(229,9,20,.25)}.intro:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(229,9,20,.38),transparent 60%);opacity:0;animation:glow 2s .1s forwards}@keyframes rev{from{opacity:0;transform:scale(1.12) scaleY(1.14);filter:blur(12px)}to{opacity:1;transform:scale(1) scaleY(1.14);filter:none}}@keyframes glow{to{opacity:1}}
 @media(max-width:760px){nav{gap:12px;padding:12px 4%}nav .logo{font-size:31px}nav ul{display:none}.search.open input{width:145px}.hero{min-height:71vh;padding-bottom:8vh}.hero h1{font-size:70px}.mode-wrap{margin:-26px 4% 24px}.mode{padding:11px 15px}.arrow{display:none}.card.live:hover,.card.live:focus-within{transform:none}.card .more{display:none}.card .cap{display:block!important}.row h2{font-size:17px}.row-note{display:none}}
@@ -51,11 +51,10 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
 
 <header class="hero" id="top">
   <div class="hero-in">
-    <a class="ig-link" href="https://www.instagram.com/mahimahfud/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><radialGradient id="igBg" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igBg)"/><rect x="6.3" y="6.3" width="11.4" height="11.4" rx="3.5" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="2.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.35" cy="7.65" r="1.05" fill="#fff"/></svg></a>
-    <h1 id="heroTitle">Netflix</h1>
-    <div class="hero-meta" id="heroMeta"></div>
-    <p id="heroDesc">Global movies, series, anime and originals with one of the smoothest viewing experiences.</p>
-    <div class="btns"><a class="btn play" id="heroGo" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>Visit</a><a class="btn info" href="#browse">Browse collection</a></div>
+    <h1 id="heroTitle">MAHIFLIX</h1>
+    <p id="heroDesc">A curated collection of the best movie &amp; web-series websites and apps.</p>
+    <a class="ig-link" href="https://www.instagram.com/mahimahfud/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><radialGradient id="igBgHero" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igBgHero)"/><rect x="6.3" y="6.3" width="11.4" height="11.4" rx="3.5" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="2.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.35" cy="7.65" r="1.05" fill="#fff"/></svg></a>
+    <div class="btns"><a class="btn info" href="#browse">Browse collection</a></div>
   </div>
 </header>
 
@@ -63,9 +62,6 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
   <div class="mode-switch" role="tablist" aria-label="MahiFlix categories">
     <button class="mode active" data-mode="sites" role="tab" aria-selected="true">WEBSITES</button>
     <button class="mode" data-mode="apps" role="tab" aria-selected="false">APPS</button>
-  </div>
-  <div class="legend">
-    <span>● No / minimal ads</span><span>● Some ads</span><span>● Ad-supported / heavier interruptions</span>
   </div>
 </div>
 
@@ -75,7 +71,7 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
   <p id="empty" class="empty">Nothing matched your search.</p>
 </main>
 
-<footer><div class="links"><a href="#browse">Websites</a><a href="#browse" id="footApps">Apps</a></div>MahiFlix © <span id="yr"></span></footer>
+<footer>MahiFlix © <span id="yr"></span></footer>
 
 <script>
 const S=[
@@ -173,14 +169,7 @@ function rowHTML(title,items,opts){
   return "<section class='row "+(top?"top10 ":"")+"row-section' data-row='"+clean(title.toLowerCase())+"'><div class='row-head'><h2>"+clean(title)+"</h2><span class='row-note'>"+clean(note)+"</span></div><div class='rail'><button class='arrow l' aria-label='Scroll left'>&#8249;</button><div class='track'>"+items.map(function(it,i){return card(it,i,top)}).join("")+"</div><button class='arrow r' aria-label='Scroll right'>&#8250;</button></div></section>";
 }
 
-function setHero(type){
-  var featured=type==="sites"?top10[0]:A.slice().sort(function(a,b){return b.score-a.score})[0];
-  document.getElementById("heroTitle").textContent=featured.name;
-  document.getElementById("heroDesc").textContent=featured.desc;
-  document.getElementById("heroGo").href=linkOf(featured);
-  document.getElementById("heroMeta").innerHTML="<span class='pill green'>"+adLabel[featured.ads]+"</span><span class='pill'>"+clean(featured.langs)+"</span><span class='pill'>Top experience pick</span>";
-}
-setHero("sites");
+function setHero(type){}
 
 document.querySelectorAll(".mode").forEach(function(btn){
   btn.addEventListener("click",function(){
@@ -189,11 +178,9 @@ document.querySelectorAll(".mode").forEach(function(btn){
     var mode=btn.dataset.mode;
     document.getElementById("sitesView").classList.toggle("active",mode==="sites");
     document.getElementById("appsView").classList.toggle("active",mode==="apps");
-    setHero(mode);
     document.getElementById("q").value="";
     document.getElementById("empty").style.display="none";
-    document.getElementById("footApps").textContent=mode==="sites"?"Apps":"Websites";
-  });
+      });
 });
 
 document.querySelectorAll(".rail").forEach(function(r){
@@ -243,7 +230,6 @@ q.addEventListener("input",function(){
 var nav=document.getElementById("nav");
 addEventListener("scroll",function(){nav.classList.toggle("solid",scrollY>40)},{passive:true});
 document.getElementById("yr").textContent=new Date().getFullYear();
-document.getElementById("footApps").onclick=function(){document.querySelector(".mode[data-mode='apps']").click()};
 
 (function(){
   var d=document.documentElement;

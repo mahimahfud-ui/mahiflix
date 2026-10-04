@@ -202,6 +202,162 @@ app.get("/api/tmdb/*", async (req, res) => {
   }
 });
 
+
+const APP_DOWNLOAD_CACHE_MS = 5 * 60_000;
+
+const APP_DOWNLOADS = {
+  netmirror: {
+    page: "https://netmirror.gg/10/en-us",
+    fallback: "https://netmiirror.app/app/NetMirror.apk",
+    allowedHosts: ["netmirror.gg", "netmiirror.app"],
+    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+  },
+  cinehd: {
+    page: "https://cinehd.dev/",
+    fallback: "https://cinehd.dev/download/global/CineHD-v1.1.4-(Universal).apk",
+    allowedHosts: ["cinehd.dev"],
+    patterns: [/https?:\\/\\/[^"'\\s<>]*CineHD[^"'\\s<>]*Universal[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+  },
+  moviboxapk: {
+    page: "https://moviboxapk.com/",
+    fallback: "https://file.dxmaxapk.com/moviebox-3-0-16-0805-03-moviboxapk.com.apk",
+    allowedHosts: ["moviboxapk.com", "file.dxmaxapk.com"],
+    patterns: [/https?:\\/\\/[^"'\\s<>]+moviebox[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+  },
+  pvrplay: {
+    page: "https://pvrplay.online/",
+    fallback: "https://stream.phoasy.com/app/PvrPlay.apk",
+    allowedHosts: ["pvrplay.online", "stream.phoasy.com"],
+    patterns: [/https?:\\/\\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+  },
+  hdghartv: {
+    page: "https://hdghartv.com.pk/apk/",
+    fallback: "https://download.hdghartv.com.pk/HDGharTV-V1.5.apk",
+    allowedHosts: ["hdghartv.com.pk", "download.hdghartv.com.pk"],
+    patterns: [/https?:\\/\\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+  },
+  anivortex: {
+    page: "https://anivortex.in/",
+    fallback: "https://anivortex.in/apk/anivortex_4.1.0.apk",
+    allowedHosts: ["anivortex.in"],
+    patterns: [/https?:\\/\\/[^"'\\s<>]*\\/apk\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+  },
+  nxsha: {
+    page: "https://nxsha.app/",
+    fallback: "https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",
+    allowedHosts: ["nxsha.app", "github.com"],
+    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+  }
+};
+
+const appDownloadCache = new Map();
+
+function normalizeHref(raw, baseUrl) {
+  const value = String(raw)
+    .replace(/&amp;/g, "&")
+    .replace(/\\/g, "")
+    .trim();
+
+  try {
+    return new URL(value, baseUrl);
+  } catch {
+    return null;
+  }
+}
+
+function allowedDownloadUrl(url, config) {
+  return (
+    url &&
+    url.protocol === "https:" &&
+    config.allowedHosts.includes(url.hostname)
+  );
+}
+
+function extractLatestApk(html, config) {
+  const candidates = [];
+
+  for (const pattern of config.patterns) {
+    for (const match of html.matchAll(pattern)) {
+      const url = normalizeHref(match[0], config.page);
+      if (allowedDownloadUrl(url, config)) {
+        candidates.push(url.toString());
+      }
+    }
+  }
+
+  for (const match of html.matchAll(/href\\s*=\\s*["']([^"']+)["']/gi)) {
+    const url = normalizeHref(match[1], config.page);
+    if (!allowedDownloadUrl(url, config)) continue;
+
+    const lower = url.pathname.toLowerCase();
+    if (lower.endsWith(".apk") || lower.includes(".apk?")) {
+      candidates.push(url.toString());
+    }
+  }
+
+  return [...new Set(candidates)][0] || null;
+}
+
+async function resolveLatestAppDownload(id) {
+  const config = APP_DOWNLOADS[id];
+  if (!config) return null;
+
+  const cached = appDownloadCache.get(id);
+  if (cached && Date.now() - cached.checkedAt < APP_DOWNLOAD_CACHE_MS) {
+    return cached.url;
+  }
+
+  try {
+    const response = await fetch(config.page, {
+      headers: {
+        accept: "text/html,application/xhtml+xml",
+        "user-agent": "MahiFlix-App-Download-Resolver/1.0"
+      },
+      signal: AbortSignal.timeout(10_000)
+    });
+
+    if (response.ok) {
+      const html = await response.text();
+      const latest = extractLatestApk(html, config);
+
+      if (latest) {
+        appDownloadCache.set(id, {
+          checkedAt: Date.now(),
+          url: latest
+        });
+        return latest;
+      }
+    }
+  } catch (error) {
+    console.warn("App download resolver fallback:", id, error.message);
+  }
+
+  appDownloadCache.set(id, {
+    checkedAt: Date.now(),
+    url: config.fallback
+  });
+
+  return config.fallback;
+}
+
+app.get("/download/app/:id", async (req, res) => {
+  const id = String(req.params.id || "").toLowerCase();
+  const config = APP_DOWNLOADS[id];
+
+  if (!config) {
+    return res.status(404).send("App download not found.");
+  }
+
+  const target = await resolveLatestAppDownload(id);
+
+  if (!target) {
+    return res.status(502).send("Unable to resolve the latest APK.");
+  }
+
+  res.setHeader("Cache-Control", "no-store");
+  res.redirect(302, target);
+});
+
 app.get("/api/health", (req, res) => {
   res.json({
     ok: true,

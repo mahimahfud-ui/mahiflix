@@ -206,6 +206,13 @@ app.get("/api/tmdb/*", async (req, res) => {
 const APP_DOWNLOAD_CACHE_MS = 5 * 60_000;
 
 const APP_DOWNLOADS = {
+  vega: {
+    page: "https://api.github.com/repos/vega-org/vega-app/releases/latest",
+    fallback: "https://github.com/vega-org/vega-app/releases/latest/download/vega-mobile-universal-v5.0.0.apk",
+    allowedHosts: ["github.com"],
+    githubLatest: true,
+    assetPattern: /^vega-mobile-universal-.*\\.apk$/i
+  },
   netmirror: {
     page: "https://netmirror.gg/10/en-us",
     fallback: "https://netmiirror.app/app/NetMirror.apk",
@@ -308,24 +315,54 @@ async function resolveLatestAppDownload(id) {
   }
 
   try {
-    const response = await fetch(config.page, {
-      headers: {
-        accept: "text/html,application/xhtml+xml",
-        "user-agent": "MahiFlix-App-Download-Resolver/1.0"
-      },
-      signal: AbortSignal.timeout(10_000)
-    });
+    if (config.githubLatest) {
+      const response = await fetch(config.page, {
+        headers: {
+          accept: "application/vnd.github+json",
+          "user-agent": "MahiFlix-App-Download-Resolver/1.0"
+        },
+        signal: AbortSignal.timeout(10_000)
+      });
 
-    if (response.ok) {
-      const html = await response.text();
-      const latest = extractLatestApk(html, config);
+      if (response.ok) {
+        const release = await response.json();
+        const asset = Array.isArray(release.assets)
+          ? release.assets.find((item) =>
+              item &&
+              item.browser_download_url &&
+              config.assetPattern.test(String(item.name || "")) &&
+              allowedDownloadUrl(new URL(item.browser_download_url), config)
+            )
+          : null;
 
-      if (latest) {
-        appDownloadCache.set(id, {
-          checkedAt: Date.now(),
-          url: latest
-        });
-        return latest;
+        if (asset?.browser_download_url) {
+          appDownloadCache.set(id, {
+            checkedAt: Date.now(),
+            url: asset.browser_download_url
+          });
+          return asset.browser_download_url;
+        }
+      }
+    } else {
+      const response = await fetch(config.page, {
+        headers: {
+          accept: "text/html,application/xhtml+xml",
+          "user-agent": "MahiFlix-App-Download-Resolver/1.0"
+        },
+        signal: AbortSignal.timeout(10_000)
+      });
+
+      if (response.ok) {
+        const html = await response.text();
+        const latest = extractLatestApk(html, config);
+
+        if (latest) {
+          appDownloadCache.set(id, {
+            checkedAt: Date.now(),
+            url: latest
+          });
+          return latest;
+        }
       }
     }
   } catch (error) {

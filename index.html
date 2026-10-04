@@ -81,62 +81,98 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
 
 <script>
 const S=[
-{name:"Netflix",domain:"netflix.com",color:"#b1060f",ads:0,score:100,new:false,langs:"30+ languages",desc:"Global movies, series, anime and originals.",kind:"site"},
-{name:"Prime Video",domain:"primevideo.com",color:"#0f5c99",ads:1,score:94,new:false,langs:"Multiple languages",desc:"Global movies, series, originals and live content.",kind:"site"},
-{name:"Disney+",domain:"disneyplus.com",color:"#172b68",ads:1,score:91,new:false,langs:"40+ languages on many titles",desc:"Disney, Pixar, Marvel, Star Wars and global originals.",kind:"site"},
-{name:"ZEE5",domain:"zee5.com",color:"#6c2b86",ads:1,score:86,new:true,langs:"Hindi, Bangla + regional",desc:"South Asian movies, series, live TV and originals.",kind:"site"},
-{name:"Plex",domain:"plex.tv",color:"#d99a12",ads:1,score:84,new:false,langs:"81 languages",desc:"Free ad-supported movies, shows, live TV and discovery.",kind:"site"},
-{name:"iQIYI",domain:"iq.com",color:"#1f8bff",ads:1,score:82,new:true,langs:"12 UI/subtitle languages",desc:"Asian dramas, movies, anime and variety from a global service.",kind:"site"},
-{name:"Rakuten Viki",domain:"viki.com",color:"#00a9b7",ads:1,score:80,new:true,langs:"200+ subtitle languages",desc:"Global TV, movies and fan-powered subtitles.",kind:"site"},
-{name:"Max",domain:"max.com",color:"#4a2bb7",ads:1,score:78,new:true,langs:"English + selected regional languages",desc:"HBO, Warner Bros., DC and premium originals.",kind:"site"},
-{name:"Crunchyroll",domain:"crunchyroll.com",color:"#f47b20",ads:0,score:76,new:true,langs:"Subbed & dubbed anime",desc:"Dedicated anime library with Premium streaming without ads.",kind:"site"},
-{name:"Apple TV",domain:"tv.apple.com",color:"#282828",ads:0,score:73,new:true,langs:"Multiple subtitle/audio options",desc:"Apple Originals with a clean, ad-free viewing experience.",kind:"site"},
-{name:"Tubi",domain:"tubitv.com",color:"#6d2cf0",ads:2,score:71,new:true,langs:"English, Spanish + more",desc:"Free and legal movies and TV funded by advertising.",kind:"site"},
-{name:"YouTube",domain:"youtube.com",color:"#ff0000",ads:2,score:69,new:false,langs:"Global / many languages",desc:"Huge global video catalogue, including movie and series content.",kind:"site"},
-{name:"Pluto TV",domain:"pluto.tv",color:"#3a3aa7",ads:2,score:63,new:true,langs:"Regional catalogues",desc:"Free live channels and on-demand entertainment.",kind:"site"},
-{name:"SonyLIV",domain:"sonyliv.com",color:"#29235f",ads:1,score:60,new:false,langs:"Hindi + regional",desc:"Indian originals, movies, sports and TV.",kind:"site"},
-{name:"Hoichoi",domain:"hoichoi.tv",color:"#c11861",ads:1,score:56,new:false,langs:"Bangla",desc:"Bengali originals, films and series.",kind:"site"},
-{name:"Chorki",domain:"chorki.com",color:"#6f1ba0",ads:1,score:53,new:false,langs:"Bangla",desc:"Bangla originals, movies and series.",kind:"site"},
-{name:"Bongo",domain:"bongobd.com",color:"#ee5a17",ads:1,score:48,new:false,langs:"Bangla + selected Hindi",desc:"Bangla movies, series and live entertainment.",kind:"site"},
-{name:"Toffee",domain:"toffeelive.com",color:"#e53535",ads:2,score:43,new:true,langs:"Bangla",desc:"Free Bangla entertainment, TV and live streaming.",kind:"site"}
+{name:"7reel",url:"https://7reels.cc",domain:"7reels.cc",ads:2,pop:74,smooth:62,langs:72,new:true,desc:"Free movie and series streaming directory.",logoSources:["https://7reels.cc/favicon-96x96.png"]},
+{name:"Plex",url:"https://watch.plex.tv/en-GB",domain:"plex.tv",ads:1,pop:96,smooth:94,langs:88,new:false,desc:"Free ad-supported movies, shows and live TV with premium options.",logoSources:[]},
+{name:"M4UHD",url:"https://m4uhd.vip/",domain:"m4uhd.vip",ads:2,pop:94,smooth:60,langs:76,new:false,desc:"Large movie and TV streaming catalogue.",logoSources:[]},
+{name:"CineHD",url:"https://cinehd.vc/",domain:"cinehd.vc",ads:2,pop:92,smooth:61,langs:78,new:false,desc:"Movies and series with a large free-streaming catalogue.",logoSources:["https://cinehd.vc/icon-192x192.png"]},
+{name:"NightFlix",url:"https://nightflix.vg/",domain:"nightflix.vg",ads:2,pop:86,smooth:62,langs:78,new:false,desc:"Free movies and TV streaming site.",logoSources:[]},
+{name:"Pvrplay",url:"https://pvrplay.online/",domain:"pvrplay.online",ads:2,pop:82,smooth:65,langs:74,new:false,desc:"Free movies and web-series streaming platform.",logoSources:[]},
+{name:"Nightflix",url:"https://nightflix.to/",domain:"nightflix.to",ads:2,pop:79,smooth:63,langs:78,new:false,desc:"Free movies and TV streaming platform.",logoSources:[]},
+{name:"Bingr",url:"https://bingr.one/home",domain:"bingr.one",ads:2,pop:73,smooth:56,langs:70,new:false,desc:"Movie and TV discovery/streaming platform.",logoSources:["https://bingr.one/icons/favicon-96x96.png","https://bingr.one/favicon.svg"]},
+{name:"Cinejoy",url:"https://cinejoy.pk/",domain:"cinejoy.pk",ads:2,pop:68,smooth:52,langs:66,new:false,desc:"Movies, TV and short-drama streaming platform.",logoSources:[]},
+{name:"Cinegram",url:"https://cinegram.tv/home",domain:"cinegram.tv",ads:1,pop:77,smooth:75,langs:76,new:false,desc:"Movies and series streaming platform.",logoSources:["https://cinegram.tv/sizes/fav-192.png"]},
+{name:"Watchott",url:"https://watchott.org/",domain:"watchott.org",ads:1,pop:58,smooth:58,langs:65,new:false,desc:"Movie and TV streaming website.",logoSources:["https://watchott.org/favicon.svg"]},
+{name:"1tube",url:"https://www.1tube.org/",domain:"1tube.org",ads:2,pop:84,smooth:66,langs:82,new:false,desc:"Movies, TV and other streaming content.",logoSources:["https://www.1tube.org/logo.png"]}
 ];
 
-const APPNames=["Netflix","Prime Video","Disney+","ZEE5","Plex","iQIYI","Rakuten Viki","Max","Crunchyroll","Apple TV","Tubi","YouTube","Pluto TV","SonyLIV","Hoichoi","Chorki","Bongo","Toffee"];
-const A=S.filter(function(x){return APPNames.indexOf(x.name)>-1}).map(function(x){return Object.assign({},x,{kind:"app"})});
-const adLabel=["NO / MINIMAL ADS","SOME ADS","AD-SUPPORTED"];
+const A=[
+{name:"NetMirror",url:"https://netmiirror.app/app/NetMirror.apk",domain:"netmiirror.app",ads:2,pop:90,smooth:66,langs:84,new:true,desc:"Android streaming app with movie and series sources.",logoSources:["https://netmiirror.app/wp-content/uploads/2026/10/cropped-NetMirror-1-192x192.webp","https://netmiirror.app/wp-content/uploads/2026/10/cropped-NetMirror-1-180x180.webp","https://netmiirror.app/wp-content/uploads/2026/10/NetMirror-2.webp"]},
+{name:"CineHD",url:"https://cinehd.dev/download/global/CineHD-v1.1.4-(Universal).apk",domain:"cinehd.dev",ads:2,pop:86,smooth:60,langs:78,new:false,desc:"Android movie and series streaming app.",logoSources:["https://cinehd.vc/icon-192x192.png","https://cinehd.dev/images/favicon.ico"]},
+{name:"Moviboxapk",url:"https://file.dxmaxapk.com/moviebox-4-0-02-0831-02-moviboxapk.com.apk",domain:"moviboxapk.com",ads:2,pop:77,smooth:63,langs:76,new:false,desc:"Android movie and series streaming app.",logoSources:["https://moviboxapk.com/wp-content/uploads/2026/06/cropped-cropped-moviebox-icon-192x192.webp","https://moviboxapk.com/wp-content/uploads/2026/06/cropped-cropped-moviebox-icon-180x180.webp"]},
+{name:"PvrPlay",url:"https://stream.phoasy.com/app/PvrPlay.apk",domain:"pvrplay.online",ads:2,pop:75,smooth:64,langs:74,new:false,desc:"Android app for movies and web series.",logoSources:[]},
+{name:"Hdghartv",url:"https://download.hdghartv.com.pk/HDGharTV_V2.7.apk",domain:"hdghartv.com.pk",ads:0,pop:72,smooth:86,langs:70,new:false,desc:"Free Android movies and TV app; its site advertises an ad-free experience.",logoSources:[]},
+{name:"Anivortex",url:"https://anivortex.in/apk/anivortex_5.0.2.apk",domain:"anivortex.in",ads:1,pop:70,smooth:72,langs:80,new:false,desc:"Anime-focused streaming app.",logoSources:["https://anivortex.in/images/anivortex_logo.webp","https://anivortex.in/images/anivortex_logo_transparent.webp"]},
+{name:"Nxsha",url:"https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",domain:"nxsha.app",ads:1,pop:74,smooth:84,langs:90,new:false,desc:"Movies, TV, anime and K-drama discovery app.",logoSources:["https://nxsha.app/favicon.ico"]}
+];
+
+const adLabel=["No / minimal ads","Some ads","More / heavier ads"];
 const adClass=["a0","a1","a2"];
-const logoFallback="https://www.google.com/s2/favicons?sz=256&domain=";
-const ddg="https://icons.duckduckgo.com/ip3/";
 
-function clean(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-function initials(n){return n.replace(/[^a-z0-9 ]/gi,"").split(/\s+/).map(function(x){return x[0]||""}).join("").slice(0,2).toUpperCase()}
-function hue(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%360;return h}
+const clean=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const initials=n=>n.replace(/[^a-z0-9 ]/gi,"").split(/\s+/).map(x=>x[0]||"").join("").slice(0,2).toUpperCase();
+const hue=n=>{let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%360;return h};
+
 function logoHTML(it){
-  var urls=[it.logo||"",logoFallback+encodeURIComponent(it.domain),ddg+encodeURIComponent(it.domain)+".ico"].filter(Boolean);
-  var on="this.onerror=null;this.src='"+urls[2]+"';this.onerror=function(){this.outerHTML='<span class=initials>"+clean(initials(it.name))+"</span>'}";
-  return "<img loading='lazy' alt='"+clean(it.name)+" logo' src='"+urls[0]+"' onerror=\"this.onerror=null;this.src='"+urls[1]+"';this.onerror="+on+"\">";
+  const sources=[...(it.logoSources||[]),
+    "https://www.google.com/s2/favicons?sz=256&domain="+encodeURIComponent(it.domain),
+    "https://icons.duckduckgo.com/ip3/"+encodeURIComponent(it.domain)+".ico"
+  ];
+  const fallback=initials(it.name);
+  const first=sources[0], second=sources[1], third=sources[2];
+  return "<img loading='lazy' alt='"+clean(it.name)+" logo' src='"+first+"' "+
+    "onerror=\"this.onerror=null;this.src='"+second+"';this.onerror=function(){this.onerror=null;this.src='"+third+"';this.onerror=function(){this.outerHTML='<span class=initials>"+fallback+"</span>'}}\">";
 }
-S.forEach(function(it){
-  it.logo=logoFallback+encodeURIComponent(it.domain);
-});
 
-function appURL(name){
-  return "https://play.google.com/store/search?c=apps&q="+encodeURIComponent(name);
+function linkOf(it){return it.url}
+
+function qualityScore(it){
+  return (it.pop*.42)+(it.smooth*.30)+(it.langs*.18)+((2-it.ads)*10);
 }
-function linkOf(it){return it.kind==="app"?appURL(it.name):"https://"+it.domain}
+
+const top10=[...S].sort((a,b)=>qualityScore(b)-qualityScore(a)).slice(0,10);
+
+function bucket(arr,n){
+  return arr.filter(x=>x.ads===n).sort((a,b)=>qualityScore(b)-qualityScore(a));
+}
+
 function card(it,i,isTop){
-  var c1=it.color||("hsl("+hue(it.name)+" 55% 34%)");
-  var c2="#0e0e0e";
-  var num=isTop?"<span class='num'>"+(i+1)+"</span>":"";
-  var nw=it.new?"<span class='badge'>NEW</span>":"";
-  var ad="<span class='ad "+adClass[it.ads]+"'>"+adLabel[it.ads]+"</span>";
-  var logo="<div class='card logo-card' style='--c1:"+c1+";--c2:"+c2+"' data-name='"+clean(it.name.toLowerCase())+"'>"+num+logoHTML(it)+nw+ad;
-  var url=linkOf(it);
-  return logo+
+  const c1=it.color||("hsl("+hue(it.name)+" 55% 34%)");
+  const c2="#0d0d0d";
+  const num=isTop?"<span class='num'>"+(i+1)+"</span>":"";
+  const nw=it.new?"<span class='badge'>NEW</span>":"";
+  const ad="<span class='ad "+adClass[it.ads]+"'>"+adLabel[it.ads]+"</span>";
+  const url=linkOf(it);
+  return "<div class='card logo-card' style='--c1:"+c1+";--c2:"+c2+"' data-name='"+clean(it.name.toLowerCase())+"'>"+
+    num+logoHTML(it)+nw+ad+
     "<a class='cap' href='"+url+"' target='_blank' rel='noopener noreferrer'>"+clean(it.name)+(it.kind==="app"?" · App":"")+"</a>"+
     "<div class='more'><div class='actions'><a class='round go' href='"+url+"' target='_blank' rel='noopener noreferrer' aria-label='Open "+clean(it.name)+"'>"+svgPlay()+"</a><button class='round fav' aria-label='Add to My List'>"+svgPlus()+"</button></div>"+
     "<b>"+clean(it.name)+"</b><p>"+clean(it.desc)+"</p><p class='lang'>"+clean(it.langs)+"</p></div></div>";
 }
+
+function rowHTML(title,items,opts){
+  if(!items.length)return "";
+  const top=opts&&opts.top,note=opts&&opts.note?opts.note:"";
+  return "<section class='row "+(top?"top10 ":"")+"row-section' data-row='"+clean(title.toLowerCase())+"'><div class='row-head'><h2>"+clean(title)+"</h2><span class='row-note'>"+clean(note)+"</span></div><div class='rail'><button class='arrow l' aria-label='Scroll left'>&#8249;</button><div class='track'>"+items.map((it,i)=>card(Object.assign({},it,{kind:opts&&opts.kind||it.kind}),i,top)).join("")+"</div><button class='arrow r' aria-label='Scroll right'>&#8250;</button></div></div></section>";
+}
+
+function renderView(type){
+  const el=document.getElementById(type==="sites"?"sitesView":"appsView");
+  const data=type==="sites"?S:A;
+  let html="";
+  if(type==="sites"){
+    html+=rowHTML("Most Visited · Top 10",top10,{top:true,kind:"site",note:"Curated from popularity, smoother UX, language coverage and lower ad burden"});
+  }
+  const fresh=data.filter(x=>x.new).sort((a,b)=>qualityScore(b)-qualityScore(a));
+  html+=rowHTML("New on MahiFlix",fresh,{kind:type==="sites"?"site":"app",note:"Recently added to your MahiFlix list"});
+  html+=rowHTML("No / Minimal Ads",bucket(data,0),{kind:type==="sites"?"site":"app",note:"Cleanest experience in your current list"});
+  html+=rowHTML("Some Ads",bucket(data,1),{kind:type==="sites"?"site":"app",note:"Moderate ad presence"});
+  html+=rowHTML("More / Heavier Ads",bucket(data,2),{kind:type==="sites"?"site":"app",note:"More interruptions or aggressive ad/redirect signals"});
+  html+=rowHTML(type==="sites"?"All Websites":"All Apps",data.slice().sort((a,b)=>qualityScore(b)-qualityScore(a)),{kind:type==="sites"?"site":"app",note:"Exact names from your original list"});
+  el.innerHTML=html;
+}
+
+renderView("sites");
+renderView("apps");
 function svgPlay(){return "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M6 4l14 8-14 8z'/></svg>"}
 function svgPlus(){return "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round'><path d='M12 5v14M5 12h14'/></svg>"}
 function rowHTML(title,items,opts){

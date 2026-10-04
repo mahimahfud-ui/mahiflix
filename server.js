@@ -210,43 +210,43 @@ const APP_DOWNLOADS = {
     page: "https://netmirror.gg/10/en-us",
     fallback: "https://netmiirror.app/app/NetMirror.apk",
     allowedHosts: ["netmirror.gg", "netmiirror.app"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
   },
   cinehd: {
     page: "https://cinehd.dev/",
     fallback: "https://cinehd.dev/download/global/CineHD-v1.1.4-(Universal).apk",
     allowedHosts: ["cinehd.dev"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]*CineHD[^"'\\s<>]*Universal[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]*CineHD[^"'\s<>]*Universal[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   moviboxapk: {
     page: "https://moviboxapk.com/",
     fallback: "https://file.dxmaxapk.com/moviebox-3-0-16-0805-03-moviboxapk.com.apk",
     allowedHosts: ["moviboxapk.com", "file.dxmaxapk.com"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+moviebox[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]+moviebox[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   pvrplay: {
     page: "https://pvrplay.online/",
     fallback: "https://stream.phoasy.com/app/PvrPlay.apk",
     allowedHosts: ["pvrplay.online", "stream.phoasy.com"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]*PvrPlay[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   hdghartv: {
     page: "https://hdghartv.com.pk/apk/",
     fallback: "https://download.hdghartv.com.pk/HDGharTV-V1.5.apk",
     allowedHosts: ["hdghartv.com.pk", "download.hdghartv.com.pk"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]+HDGharTV[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   anivortex: {
     page: "https://anivortex.in/",
     fallback: "https://anivortex.in/apk/anivortex_4.1.0.apk",
     allowedHosts: ["anivortex.in"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]*\\/apk\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]*\/apk\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
   },
   nxsha: {
     page: "https://nxsha.app/",
     fallback: "https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",
     allowedHosts: ["nxsha.app", "github.com"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
   }
 };
 

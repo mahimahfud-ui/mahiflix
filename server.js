@@ -211,7 +211,7 @@ const APP_DOWNLOADS = {
     fallback: "https://github.com/vega-org/vega-app/releases/latest/download/vega-mobile-universal-v5.0.0.apk",
     allowedHosts: ["github.com"],
     githubLatest: true,
-    assetPattern: /^vega-mobile-universal-.*\\.apk$/i
+    assetPattern: { test: (name) => String(name || "").toLowerCase().startsWith("vega-mobile-universal-") && String(name || "").toLowerCase().endsWith(".apk") }
   },
   netmirror: {
     page: "https://netmirror.gg/10/en-us",

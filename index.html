@@ -16,7 +16,7 @@ try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.
 :root{--bg:#141414;--panel:#181818;--card:#242424;--text:#fff;--dim:#a7a7a7;--muted:#707070;--red:#e50914;--green:#46d369;--yellow:#f5c518;--border:#343434}
 *{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}a{color:inherit;text-decoration:none}button,input{font:inherit}button{cursor:pointer}:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .logo{font:400 36px/1 "Bebas Neue",Impact,sans-serif;letter-spacing:.05em;color:var(--red)}
-nav{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;justify-content:center;gap:30px;padding:15px 4%;background:linear-gradient(180deg,rgba(0,0,0,.92),transparent);transition:.3s}
+nav{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;justify-content:center;gap:24px;padding:15px 4%;background:linear-gradient(180deg,rgba(0,0,0,.92),transparent);transition:.3s}
 nav.solid{background:rgba(20,20,20,.98);box-shadow:0 8px 30px rgba(0,0,0,.18)}nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-size:14px}nav ul a{color:#ddd}nav ul a.on,nav ul a:hover{color:#fff;font-weight:700}
 .nav-tools{position:absolute;right:4%;display:flex;align-items:center;gap:8px}.search{display:flex;align-items:center;border:1px solid transparent;padding:6px 8px}.search.open{border-color:#fff;background:#090909}.search button{border:0;background:none;color:#fff;display:grid;place-items:center;padding:0}.search input{width:0;opacity:0;border:0;outline:0;background:none;color:#fff;transition:.2s}.search.open input{width:180px;opacity:1;margin-left:8px}
 .hero{position:relative;min-height:76vh;display:flex;align-items:flex-end;padding:110px 4% 10vh;background:radial-gradient(ellipse at 78% 24%,rgba(229,9,20,.5),transparent 34%),linear-gradient(90deg,rgba(0,0,0,.86),rgba(0,0,0,.18) 76%),linear-gradient(0deg,var(--bg),transparent 48%),#25070a}
@@ -43,8 +43,6 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
   <a class="logo" href="#top" aria-label="MahiFlix">MAHIFLIX</a>
   <ul>
     <li><a href="#top" data-nav="home" class="on">Home</a></li>
-    <li><a href="#top10" data-nav="web">Most visited</a></li>
-    <li><a href="#new" data-nav="web">New</a></li>
   </ul>
   <div class="nav-tools">
     <div class="search" id="search"><button id="sbtn" aria-label="Search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button><input id="q" type="search" placeholder="Search" autocomplete="off"></div>
@@ -140,8 +138,8 @@ function card(it,i,isTop){
   const c1=it.color||("hsl("+hue(it.name)+" 55% 34%)");
   const c2="#0d0d0d";
   const num=isTop?"<span class='num'>"+(i+1)+"</span>":"";
-  const nw=it.new?"<span class='badge'>NEW</span>":(it.ads===0?"<span class='badge'>NO AD</span>":(it.ads===1?"<span class='badge'>LESS AD</span>":""));
-  const ad="<span class='ad "+adClass[it.ads]+"'>"+adLabel[it.ads]+"</span>";
+  const nw=it.new?"<span class='badge'>NEW</span>":"";
+  const ad=it.ads<2?"<span class='ad "+adClass[it.ads]+"'>"+(it.ads===0?"NO AD":"LESS AD")+"</span>":"";
   const url=linkOf(it);
   return "<div class='card logo-card' style='--c1:"+c1+";--c2:"+c2+"' data-name='"+clean(it.name.toLowerCase())+"'>"+
     num+logoHTML(it)+nw+ad+

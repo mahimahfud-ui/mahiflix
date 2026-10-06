@@ -249,6 +249,12 @@ const APP_DOWNLOADS = {
     allowedHosts: ["anivortex.in"],
     patterns: [/https?:\/\/[^"'\s<>]*\/apk\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
   },
+  nuvix: {
+    page: "https://www.nuvixapp.in/",
+    fallback: "https://www.nuvixapp.in/",
+    allowedHosts: ["www.nuvixapp.in", "nuvixapp.in"],
+    patterns: [/https?:\/\/[^"'\s<>]+\.apk(?:\?[^"'\s<>]*)?/i]
+  },
   nxsha: {
     page: "https://nxsha.app/",
     fallback: "https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",

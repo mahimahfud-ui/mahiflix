@@ -13,6 +13,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
 try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("nf-intro"))document.documentElement.classList.add("intro-on")}catch(e){}
+document.documentElement.classList.add("cin");setTimeout(function(){if(!window.__cinema)document.documentElement.classList.remove("cin")},4000);
 </script>
 <style>
 :root{--bg:#141414;--panel:#181818;--card:#242424;--text:#fff;--dim:#a7a7a7;--muted:#707070;--red:#e50914;--green:#46d369;--yellow:#f5c518;--border:#343434}
@@ -38,8 +39,11 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
 @media(max-width:760px){nav{gap:12px;padding:12px 4%}nav .logo{font-size:31px}nav ul{display:none}.search.open input{width:145px}.hero{min-height:0;padding:78px 4% 6px}.hero h1{font-size:70px}.mode-wrap{margin:4px 4% 14px}.mode{padding:11px 15px}.arrow{display:none}.card.live:hover,.card.live:focus-within{transform:translateY(-4px) scale(1.035)}.card .more{display:none}.card .cap{display:block!important}.row h2{font-size:17px}.row-note{display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
+<link rel="stylesheet" href="/cinema/cinema.css">
 </head>
 <body>
+<div class="cinema-fallback" aria-hidden="true"></div>
+<canvas id="cinema" aria-hidden="true"></canvas>
 <div class="intro" id="intro" aria-hidden="true"><div class="intro-logo" aria-label="MahiFlix"></div></div>
 
 <nav id="nav">
@@ -54,9 +58,11 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
 
 <header class="hero" id="top">
   <div class="hero-in">
-    <p id="heroDesc">A curated collection of the best movie &amp; web-series websites and apps.</p>
+    <h1><span class="hero-line sm">Unlocking the Universe of</span><span class="hero-line big">Movies &amp; Web Series</span></h1>
+    <p id="heroDesc" class="hero-line">A curated collection of the best movie &amp; web-series websites and apps.</p>
     <a class="ig-link" href="https://www.instagram.com/mahimahfud/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><radialGradient id="igBgHero" cx="30%" cy="107%" r="150%"><stop offset="0%" stop-color="#fdf497"/><stop offset="5%" stop-color="#fdf497"/><stop offset="45%" stop-color="#fd5949"/><stop offset="60%" stop-color="#d6249f"/><stop offset="90%" stop-color="#285AEB"/></radialGradient></defs><rect x="2" y="2" width="20" height="20" rx="6" fill="url(#igBgHero)"/><rect x="6.3" y="6.3" width="11.4" height="11.4" rx="3.5" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="2.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="16.35" cy="7.65" r="1.05" fill="#fff"/></svg></a>
   </div>
+  <a class="cue" href="#browse" aria-label="Browse websites and apps"><span>Browse</span><i></i></a>
 </header>
 
 <div class="mode-wrap" id="browse">
@@ -71,6 +77,15 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
   <div id="appsView" class="view"></div>
   <p id="empty" class="empty">Nothing matched your search.</p>
 </main>
+
+<section class="finale" id="finale" aria-label="MahiFlix">
+  <div class="finale-in">
+    <img class="finale-logo" src="/m-logo-v2.svg" alt="" width="128" height="128">
+    <h2>MahiFlix</h2>
+    <p>A curated collection of the best movie &amp; web-series websites and apps.</p>
+    <div class="btns"><a class="btn play" href="#top">Back to top</a><a class="btn info" href="https://www.instagram.com/mahimahfud/" target="_blank" rel="noopener noreferrer">Instagram</a></div>
+  </div>
+</section>
 
 <footer>MahiFlix © <span id="yr"></span></footer>
 
@@ -92,16 +107,16 @@ const S=[
 ];
 
 const A=[
-{name:"FilmTV",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/filmtv",domain:"filmtvapp.com",ads:0,pop:84,smooth:88,langs:86,new:true,desc:"FilmTV Android app with direct APK download.",logoSources:["https://www.filmtvapp.com/favicon.ico","https://www.filmtvapp.com/favicon.png","https://www.filmtvapp.com/icon-192.png"]},
-{name:"Nuvix",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/nuvix",domain:"nuvixapp.in",ads:0,pop:82,smooth:88,langs:86,new:true,desc:"Nuvix Android app with direct APK download.",logoSources:["https://www.nuvixapp.in/favicon.ico","https://www.nuvixapp.in/favicon.png","https://www.nuvixapp.in/icon-192.png"]},
-{name:"Vega",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/vega",domain:"github.com",ads:0,pop:88,smooth:91,langs:92,new:true,desc:"Open-source Android media streaming app with ad-free streaming and downloads.",logoSources:["https://raw.githubusercontent.com/vega-org/vega-app/main/assets/adaptive_icon.png"]},
-{name:"NetMirror",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/netmirror",domain:"netmirror.gg",ads:2,pop:90,smooth:66,langs:84,new:true,desc:"Android streaming app with movie and series sources.",logoSources:["https://netmirror.gg/favicon.ico","https://netmirror.gg/favicon.png","https://netmiirror.app/wp-content/uploads/2026/10/cropped-NetMirror-1-192x192.webp","https://netmiirror.app/wp-content/uploads/2026/10/cropped-NetMirror-1-180x180.webp"]},
-{name:"CineHD",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/cinehd",domain:"cinehd.dev",ads:2,pop:86,smooth:60,langs:78,new:false,desc:"Android movie and series streaming app.",logoSources:["https://cinehd.vc/icon-192x192.png","https://cinehd.dev/images/favicon.ico"]},
-{name:"Moviboxapk",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/moviboxapk",domain:"moviboxapk.com",ads:2,pop:77,smooth:63,langs:76,new:false,desc:"Android movie and series streaming app.",logoSources:["https://moviboxapk.com/wp-content/uploads/2026/06/cropped-cropped-moviebox-icon-192x192.webp","https://moviboxapk.com/wp-content/uploads/2026/06/cropped-cropped-moviebox-icon-180x180.webp","https://moviboxapk.com/favicon.ico","https://moviboxapk.com/favicon.png"]},
-{name:"PvrPlay",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/pvrplay",domain:"pvrplay.online",ads:2,pop:75,smooth:64,langs:74,new:false,desc:"Android app for movies and web series.",logoSources:["https://pvrplay.online/favicon.ico","https://pvrplay.online/favicon.png"]},
-{name:"Hdghartv",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/hdghartv",domain:"hdghartv.com.pk",ads:0,pop:72,smooth:86,langs:70,new:false,desc:"Free Android movies and TV app; its site advertises an ad-free experience.",logoSources:["https://hdghartv.com.pk/wp-content/uploads/2026/08/hdghartv-logo.png","https://hdghartv.com.pk/logo.png","https://hdghartv.com.pk/favicon.png","https://hdghartv.com.pk/favicon.ico"]},
-{name:"Anivortex",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/anivortex",domain:"anivortex.in",ads:1,pop:70,smooth:72,langs:80,new:false,desc:"Anime-focused streaming app.",logoSources:["https://anivortex.in/images/anivortex_logo.webp","https://anivortex.in/images/anivortex_logo_transparent.webp","https://anivortex.in/favicon.ico","https://anivortex.in/favicon.png"]},
-{name:"Nxsha",url:"https://mahimahfud-moviedictionary.onrender.com/download/app/nxsha",domain:"nxsha.app",ads:1,pop:74,smooth:84,langs:90,new:false,desc:"Movies, TV, anime and K-drama discovery app.",logoSources:["https://nxsha.app/favicon.ico","https://nxsha.app/favicon.png","https://nxsha.app/icon-192.png"]}
+{name:"FilmTV",url:"/download/app/filmtv",domain:"filmtvapp.com",ads:0,pop:84,smooth:88,langs:86,new:true,desc:"FilmTV Android app with direct APK download.",logoSources:["https://www.filmtvapp.com/favicon.ico","https://www.filmtvapp.com/favicon.png","https://www.filmtvapp.com/icon-192.png"]},
+{name:"Nuvix",url:"/download/app/nuvix",domain:"nuvixapp.in",ads:0,pop:82,smooth:88,langs:86,new:true,desc:"Nuvix Android app with direct APK download.",logoSources:["https://www.nuvixapp.in/favicon.ico","https://www.nuvixapp.in/favicon.png","https://www.nuvixapp.in/icon-192.png"]},
+{name:"Vega",url:"/download/app/vega",domain:"github.com",ads:0,pop:88,smooth:91,langs:92,new:true,desc:"Open-source Android media streaming app with ad-free streaming and downloads.",logoSources:["https://raw.githubusercontent.com/vega-org/vega-app/main/assets/adaptive_icon.png"]},
+{name:"NetMirror",url:"/download/app/netmirror",domain:"netmirror.gg",ads:2,pop:90,smooth:66,langs:84,new:true,desc:"Android streaming app with movie and series sources.",logoSources:["https://netmirror.gg/favicon.ico","https://netmirror.gg/favicon.png","https://netmiirror.app/wp-content/uploads/2026/10/cropped-NetMirror-1-192x192.webp","https://netmiirror.app/wp-content/uploads/2026/10/cropped-NetMirror-1-180x180.webp"]},
+{name:"CineHD",url:"/download/app/cinehd",domain:"cinehd.dev",ads:2,pop:86,smooth:60,langs:78,new:false,desc:"Android movie and series streaming app.",logoSources:["https://cinehd.vc/icon-192x192.png","https://cinehd.dev/images/favicon.ico"]},
+{name:"Moviboxapk",url:"/download/app/moviboxapk",domain:"moviboxapk.com",ads:2,pop:77,smooth:63,langs:76,new:false,desc:"Android movie and series streaming app.",logoSources:["https://moviboxapk.com/wp-content/uploads/2026/06/cropped-cropped-moviebox-icon-192x192.webp","https://moviboxapk.com/wp-content/uploads/2026/06/cropped-cropped-moviebox-icon-180x180.webp","https://moviboxapk.com/favicon.ico","https://moviboxapk.com/favicon.png"]},
+{name:"PvrPlay",url:"/download/app/pvrplay",domain:"pvrplay.online",ads:2,pop:75,smooth:64,langs:74,new:false,desc:"Android app for movies and web series.",logoSources:["https://pvrplay.online/favicon.ico","https://pvrplay.online/favicon.png"]},
+{name:"Hdghartv",url:"/download/app/hdghartv",domain:"hdghartv.com.pk",ads:0,pop:72,smooth:86,langs:70,new:false,desc:"Free Android movies and TV app; its site advertises an ad-free experience.",logoSources:["https://hdghartv.com.pk/wp-content/uploads/2026/08/hdghartv-logo.png","https://hdghartv.com.pk/logo.png","https://hdghartv.com.pk/favicon.png","https://hdghartv.com.pk/favicon.ico"]},
+{name:"Anivortex",url:"/download/app/anivortex",domain:"anivortex.in",ads:1,pop:70,smooth:72,langs:80,new:false,desc:"Anime-focused streaming app.",logoSources:["https://anivortex.in/images/anivortex_logo.webp","https://anivortex.in/images/anivortex_logo_transparent.webp","https://anivortex.in/favicon.ico","https://anivortex.in/favicon.png"]},
+{name:"Nxsha",url:"/download/app/nxsha",domain:"nxsha.app",ads:1,pop:74,smooth:84,langs:90,new:false,desc:"Movies, TV, anime and K-drama discovery app.",logoSources:["https://nxsha.app/favicon.ico","https://nxsha.app/favicon.png","https://nxsha.app/icon-192.png"]}
 ];
 
 const adLabel=["No / minimal ads","Some ads","More / heavier ads"];
@@ -255,8 +270,9 @@ document.getElementById("yr").textContent=new Date().getFullYear();
   if(!d.classList.contains("intro-on"))return;
   var done=false;
   function end(){if(done)return;done=true;try{sessionStorage.setItem("nf-intro","1")}catch(e){}d.classList.add("intro-leave");setTimeout(function(){d.classList.remove("intro-on","intro-leave")},650)}
-  document.getElementById("intro").addEventListener("click",end);setTimeout(end,2750)
+  var i=document.getElementById("intro");i.addEventListener("click",end);addEventListener("keydown",end,{once:true});i.addEventListener("touchstart",end,{passive:true});setTimeout(end,2450)
 })();
 </script>
+<script type="module" src="/cinema/main.js"></script>
 </body>
 </html>

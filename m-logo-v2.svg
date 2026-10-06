@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+<defs>
+ <linearGradient id="m" x1="70" y1="40" x2="450" y2="480" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#ff3038"/>
+  <stop offset=".48" stop-color="#e50914"/>
+  <stop offset="1" stop-color="#9b0008"/>
+ </linearGradient>
+ <linearGradient id="mh" x1="100" y1="50" x2="410" y2="450" gradientUnits="userSpaceOnUse">
+  <stop stop-color="#ff6267"/>
+  <stop offset=".48" stop-color="#f0141f"/>
+  <stop offset="1" stop-color="#b40008"/>
+ </linearGradient>
+ <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+  <feGaussianBlur stdDeviation="12" result="blur"/>
+  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+ </filter>
+</defs>
+<!-- Original MahiFlix M lettermark: two outer stems and a deep central valley -->
+<path d="M88 430V82h82l86 224 86-224h82v348h-82V264l-86 190-86-190v166z" fill="url(#m)" filter="url(#glow)"/>
+<path d="M88 82h82l86 224-54 119L88 238z" fill="url(#mh)"/>
+<path d="M342 82h82v348h-82z" fill="url(#m)"/>
+</svg>

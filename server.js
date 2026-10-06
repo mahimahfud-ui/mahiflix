@@ -249,6 +249,12 @@ const APP_DOWNLOADS = {
     allowedHosts: ["anivortex.in"],
     patterns: [/https?:\/\/[^"'\s<>]*\/apk\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
   },
+  filmtv: {
+    page: "https://www.filmtvapp.com/",
+    fallback: "https://www.filmtvapp.com/",
+    allowedHosts: ["www.filmtvapp.com", "filmtvapp.com"],
+    patterns: [/https?:\/\/[^"'\s<>]+\.apk(?:\?[^"'\s<>]*)?/i]
+  },
   nuvix: {
     page: "https://www.nuvixapp.in/",
     fallback: "https://www.nuvixapp.in/",

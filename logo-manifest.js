@@ -1,8 +1,8 @@
 window.MAHIFLIX_LOGOS = {
-  "cineyz.com": "https://cineyz.com/favicon.ico",
+  "freekz.to": "https://freekz.to/favicon.ico",
   "bingr.one": "https://bingr.one/favicon.svg",
   "cinegram.tv": "https://cinegram.tv/sizes/fav-192.png",
-  "m4uhd.gold": "https://m4uhd.gold/favicon.png",
+  "m4uhd.gold": "https://m4uhdfree.net/favicon.ico",
   "cinehd.vc": "https://cinehd.vc/favicon.ico",
   "pvrplay.online": "https://pvrplay.online/favicon.ico",
   "nightflix.vg": "https://nightflix.vg/logo.png",

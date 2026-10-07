@@ -218,14 +218,14 @@ const APP_DOWNLOADS = {
   vega: {
     page: "https://api.github.com/repos/vega-org/vega-app/releases/latest",
     fallback: "https://github.com/vega-org/vega-app/releases/latest",
-    allowedHosts: ["github.com"],
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
     githubLatest: true,
-    assetPattern: { test: (name) => /\.apk$/i.test(String(name || "")) && /vega/i.test(String(name || "")) }
+    assetPattern: { test: (name) => /\.apk$/i.test(String(name || "")) }
   },
   netmirror: {
     page: "https://netmirror.gg/10/en-us",
-    fallback: "https://netmiirror.app/app/NetMirror.apk",
-    allowedHosts: ["netmirror.gg", "netmiirror.app"],
+    fallback: "https://netmirror.gg/NetMirror.apk",
+    allowedHosts: ["netmirror.gg"],
     patterns: [/https?:\/\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
   },
   cinehd: {
@@ -247,9 +247,9 @@ const APP_DOWNLOADS = {
     patterns: [/https?:\/\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   hdghartv: {
-    page: "https://hdghartv.com.pk/apk/",
+    page: "https://watch.hdghartv.com.pk/",
     fallback: "https://download.hdghartv.com.pk/HDGharTV-V1.5.apk",
-    allowedHosts: ["hdghartv.com.pk", "download.hdghartv.com.pk"],
+    allowedHosts: ["watch.hdghartv.com.pk", "hdghartv.com.pk", "download.hdghartv.com.pk"],
     patterns: [/https?:\/\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   anivortex: {
@@ -302,11 +302,11 @@ function allowedDownloadUrl(url, config) {
   );
 }
 
-function extractLatestApk(html, config) {
+function extractLatestApk(html, config, baseUrl = config.page) {
   const candidates = [];
 
   const addCandidate = (raw) => {
-    const url = normalizeHref(raw, config.page);
+    const url = normalizeHref(raw, baseUrl);
     if (allowedDownloadUrl(url, config)) candidates.push(url.toString());
   };
 
@@ -413,7 +413,7 @@ async function resolveLatestAppDownload(id) {
 
       if (response.ok) {
         const html = await response.text();
-        const latest = extractLatestApk(html, config);
+        const latest = extractLatestApk(html, config, response.url || config.page);
 
         if (latest) {
           appDownloadCache.set(id, {

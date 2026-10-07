@@ -136,19 +136,12 @@ function logoHTML(it){
     "https://"+it.domain+"/favicon.png",
     "https://"+it.domain+"/favicon.svg"
   ];
-  const priority=(it.name==="bCine"||it.name==="Hdghartv");
-  const sources=[...(priority?[google,...curated]:curated),google,googleV2,...direct,duck];
-  const unique=[...new Set(sources.filter(Boolean))];
-  const json=JSON.stringify(unique);
-  return "<img class='logo-img' loading='lazy' decoding='async' fetchpriority='auto' alt='"+clean(it.name)+" logo' src='"+unique[0]+"' data-logo-sources='"+clean(json)+"' data-logo-index='0' onload='logoLoaded(this)' onerror='nextLogo(this)'>";
+  const sources=[...new Set([...curated,google,googleV2,...direct,duck].filter(Boolean))];
+  const json=JSON.stringify(sources);
+  return "<img class='logo-img' loading='eager' decoding='async' fetchpriority='high' alt='"+clean(it.name)+" logo' src='"+sources[0]+"' data-logo-sources='"+clean(json)+"' data-logo-index='0' onload='logoLoaded(this)' onerror='nextLogo(this)'>";
 }
 function logoLoaded(img){
   img.classList.add("logo-ready");
-  try{
-    if(img.decode){
-      img.decode().catch(function(){}).then(function(){img.classList.add("logo-ready")});
-    }
-  }catch(e){}
 }
 function nextLogo(img){
   img.classList.remove("logo-ready");

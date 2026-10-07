@@ -11,6 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="/logo-manifest.js"></script>
 <script>
 try{if(!matchMedia("(prefers-reduced-motion: reduce)").matches&&!sessionStorage.getItem("nf-intro"))document.documentElement.classList.add("intro-on")}catch(e){}
 document.documentElement.classList.add("cin");setTimeout(function(){if(!window.__cinema)document.documentElement.classList.remove("cin")},4000);
@@ -136,7 +137,8 @@ function logoHTML(it){
     "https://"+it.domain+"/favicon.png",
     "https://"+it.domain+"/favicon.svg"
   ];
-  const sources=[...new Set([...curated,google,googleV2,...direct,duck].filter(Boolean))];
+  const localLogo=(window.MAHIFLIX_LOGOS&&window.MAHIFLIX_LOGOS[it.domain])||"";
+  const sources=localLogo?[localLogo]:[...new Set([...curated,google,googleV2,...direct,duck].filter(Boolean))];
   const json=JSON.stringify(sources);
   return "<img class='logo-img' loading='eager' decoding='async' fetchpriority='high' alt='"+clean(it.name)+" logo' src='"+sources[0]+"' data-logo-sources='"+clean(json)+"' data-logo-index='0' onload='logoLoaded(this)' onerror='nextLogo(this)'>";
 }

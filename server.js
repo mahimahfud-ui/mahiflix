@@ -213,7 +213,7 @@ const APP_DOWNLOADS = {
     page: "https://7reels.cc/download",
     fallback: null,
     allowedHosts: ["7reels.cc"],
-    patterns: [/https?:\\/\\/[^"']+\\.apk(?:\\?[^"']*)?/i]
+    patterns: [/https?:\/\/[^"\']+\.apk(?:\?[^"\']*)?/i]
   },
   vega: {
     page: "https://api.github.com/repos/vega-org/vega-app/releases/latest",

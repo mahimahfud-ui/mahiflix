@@ -204,6 +204,9 @@ app.get("/api/tmdb/*", async (req, res) => {
 
 
 const APP_DOWNLOAD_CACHE_MS = 5 * 60_000;
+const APP_DOWNLOAD_TIMEOUT_MS = 120_000;
+const APP_RESOLVER_TIMEOUT_MS = 12_000;
+const APP_MAX_REDIRECTS = 5;
 
 const APP_DOWNLOADS = {
   vega: {
@@ -217,55 +220,55 @@ const APP_DOWNLOADS = {
     page: "https://netmirror.gg/10/en-us",
     fallback: "https://netmiirror.app/app/NetMirror.apk",
     allowedHosts: ["netmirror.gg", "netmiirror.app"],
-    patterns: [/https?:\/\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
   },
   cinehd: {
     page: "https://cinehd.dev/",
     fallback: "https://cinehd.dev/download/global/CineHD-v1.1.4-(Universal).apk",
     allowedHosts: ["cinehd.dev"],
-    patterns: [/https?:\/\/[^"'\s<>]*CineHD[^"'\s<>]*Universal[^"'\s<>]*\.apk[^"'\s<>]*/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]*CineHD[^"'\\s<>]*Universal[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
   },
   moviboxapk: {
     page: "https://moviboxapk.com/",
     fallback: "https://file.dxmaxapk.com/moviebox-3-0-16-0805-03-moviboxapk.com.apk",
     allowedHosts: ["moviboxapk.com", "file.dxmaxapk.com"],
-    patterns: [/https?:\/\/[^"'\s<>]+moviebox[^"'\s<>]*\.apk[^"'\s<>]*/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]+moviebox[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
   },
   pvrplay: {
     page: "https://pvrplay.online/",
     fallback: "https://stream.phoasy.com/app/PvrPlay.apk",
     allowedHosts: ["pvrplay.online", "stream.phoasy.com"],
-    patterns: [/https?:\/\/[^"'\s<>]*PvrPlay[^"'\s<>]*\.apk[^"'\s<>]*/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
   },
   hdghartv: {
     page: "https://hdghartv.com.pk/apk/",
     fallback: "https://download.hdghartv.com.pk/HDGharTV-V1.5.apk",
     allowedHosts: ["hdghartv.com.pk", "download.hdghartv.com.pk"],
-    patterns: [/https?:\/\/[^"'\s<>]+HDGharTV[^"'\s<>]*\.apk[^"'\s<>]*/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
   },
   anivortex: {
     page: "https://anivortex.in/",
     fallback: "https://anivortex.in/apk/anivortex_4.1.0.apk",
     allowedHosts: ["anivortex.in"],
-    patterns: [/https?:\/\/[^"'\s<>]*\/apk\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]*\\/apk\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
   },
   filmtv: {
     page: "https://www.filmtvapp.com/",
-    fallback: "https://www.filmtvapp.com/",
+    fallback: null,
     allowedHosts: ["www.filmtvapp.com", "filmtvapp.com"],
-    patterns: [/https?:\/\/[^"'\s<>]+\.apk(?:\?[^"'\s<>]*)?/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk(?:\\?[^"'\\s<>]*)?/i]
   },
   nuvix: {
     page: "https://www.nuvixapp.in/",
-    fallback: "https://www.nuvixapp.in/",
+    fallback: null,
     allowedHosts: ["www.nuvixapp.in", "nuvixapp.in"],
-    patterns: [/https?:\/\/[^"'\s<>]+\.apk(?:\?[^"'\s<>]*)?/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk(?:\\?[^"'\\s<>]*)?/i]
   },
   nxsha: {
     page: "https://nxsha.app/",
     fallback: "https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",
     allowedHosts: ["nxsha.app", "github.com"],
-    patterns: [/https?:\/\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
+    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
   }
 };
 
@@ -285,36 +288,82 @@ function normalizeHref(raw, baseUrl) {
 }
 
 function allowedDownloadUrl(url, config) {
-  return (
+  return Boolean(
     url &&
     url.protocol === "https:" &&
-    config.allowedHosts.includes(url.hostname)
+    config.allowedHosts.includes(url.hostname) &&
+    /\\.apk$/i.test(url.pathname)
   );
 }
 
 function extractLatestApk(html, config) {
   const candidates = [];
 
-  for (const pattern of config.patterns) {
-    for (const match of html.matchAll(pattern)) {
-      const url = normalizeHref(match[0], config.page);
-      if (allowedDownloadUrl(url, config)) {
-        candidates.push(url.toString());
-      }
-    }
+  const addCandidate = (raw) => {
+    const url = normalizeHref(raw, config.page);
+    if (allowedDownloadUrl(url, config)) candidates.push(url.toString());
+  };
+
+  for (const pattern of config.patterns || []) {
+    for (const match of html.matchAll(pattern)) addCandidate(match[0]);
   }
 
-  for (const match of html.matchAll(/href\\s*=\\s*["']([^"']+)["']/gi)) {
-    const url = normalizeHref(match[1], config.page);
-    if (!allowedDownloadUrl(url, config)) continue;
-
-    const lower = url.pathname.toLowerCase();
-    if (lower.endsWith(".apk") || lower.includes(".apk?")) {
-      candidates.push(url.toString());
-    }
+  // Handle relative APK links used by many download pages.
+  for (const match of html.matchAll(/(?:href|src|data-href|data-url)\\s*=\\s*["']([^"']+\\.apk(?:\\?[^"']*)?)["']/gi)) {
+    addCandidate(match[1]);
   }
 
-  return [...new Set(candidates)][0] || null;
+  // Also catch quoted absolute/relative APK URLs embedded in scripts.
+  for (const match of html.matchAll(/["']((?:https?:\\/\\/|\\/)[^"'\\s<>]+\\.apk(?:\\?[^"'\\s<>]*)?)["']/gi)) {
+    addCandidate(match[1]);
+  }
+
+  const unique = [...new Set(candidates)];
+  if (!unique.length) return null;
+
+  // Prefer universal builds when a page exposes multiple architectures.
+  return unique.sort((a, b) => {
+    const au = /universal/i.test(a), bu = /universal/i.test(b);
+    return Number(bu) - Number(au);
+  })[0];
+}
+
+async function fetchResolverPage(url, config) {
+  let current = new URL(url);
+
+  for (let hop = 0; hop <= APP_MAX_REDIRECTS; hop++) {
+    const response = await fetch(current, {
+      redirect: "manual",
+      headers: {
+        accept: "text/html,application/xhtml+xml,application/json",
+        "user-agent": "MahiFlix-App-Download-Resolver/1.0"
+      },
+      signal: AbortSignal.timeout(APP_RESOLVER_TIMEOUT_MS)
+    });
+
+    if (response.status < 300 || response.status >= 400) {
+      return response;
+    }
+
+    const location = response.headers.get("location");
+    if (!location) throw new Error("Resolver redirect without location.");
+
+    const next = normalizeHref(location, current);
+    if (!next || next.protocol !== "https:") {
+      throw new Error("Resolver redirect rejected.");
+    }
+
+    // GitHub's release API is intentionally allowed only for the API lookup,
+    // while all non-GitHub app pages must remain on their configured hosts.
+    const resolverHosts = config.githubLatest ? ["api.github.com"] : config.allowedHosts;
+    if (!resolverHosts.includes(next.hostname)) {
+      throw new Error("Resolver redirect host rejected: " + next.hostname);
+    }
+
+    current = next;
+  }
+
+  throw new Error("Too many resolver redirects.");
 }
 
 async function resolveLatestAppDownload(id) {
@@ -333,7 +382,7 @@ async function resolveLatestAppDownload(id) {
           accept: "application/vnd.github+json",
           "user-agent": "MahiFlix-App-Download-Resolver/1.0"
         },
-        signal: AbortSignal.timeout(10_000)
+        signal: AbortSignal.timeout(APP_RESOLVER_TIMEOUT_MS)
       });
 
       if (response.ok) {
@@ -356,13 +405,7 @@ async function resolveLatestAppDownload(id) {
         }
       }
     } else {
-      const response = await fetch(config.page, {
-        headers: {
-          accept: "text/html,application/xhtml+xml",
-          "user-agent": "MahiFlix-App-Download-Resolver/1.0"
-        },
-        signal: AbortSignal.timeout(10_000)
-      });
+      const response = await fetchResolverPage(config.page, config);
 
       if (response.ok) {
         const html = await response.text();
@@ -381,12 +424,77 @@ async function resolveLatestAppDownload(id) {
     console.warn("App download resolver fallback:", id, error.message);
   }
 
-  appDownloadCache.set(id, {
-    checkedAt: Date.now(),
-    url: config.fallback
-  });
+  if (config.fallback && allowedDownloadUrl(new URL(config.fallback), config)) {
+    appDownloadCache.set(id, {
+      checkedAt: Date.now(),
+      url: config.fallback
+    });
+    return config.fallback;
+  }
 
-  return config.fallback;
+  appDownloadCache.delete(id);
+  return null;
+}
+
+async function fetchApk(url, config) {
+  let current = new URL(url);
+
+  for (let hop = 0; hop <= APP_MAX_REDIRECTS; hop++) {
+    if (!allowedDownloadUrl(current, config)) {
+      throw new Error("APK host or path rejected.");
+    }
+
+    const response = await fetch(current, {
+      redirect: "manual",
+      headers: {
+        "user-agent": "MahiFlix-App-Downloader/1.0",
+        accept: "application/vnd.android.package-archive,application/octet-stream,*/*"
+      },
+      signal: AbortSignal.timeout(APP_DOWNLOAD_TIMEOUT_MS)
+    });
+
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      if (!location) throw new Error("APK redirect without location.");
+
+      const next = normalizeHref(location, current);
+      if (!next || !allowedDownloadUrl(next, config)) {
+        throw new Error("APK redirect host/path rejected.");
+      }
+
+      current = next;
+      continue;
+    }
+
+    if (!response.ok || !response.body) {
+      throw new Error("Upstream APK request failed with HTTP " + response.status);
+    }
+
+    const contentType = (response.headers.get("content-type") || "").toLowerCase();
+    const contentDisposition = response.headers.get("content-disposition") || "";
+    const looksLikeApk =
+      /application/vnd\\.android\\.package-archive/i.test(contentType) ||
+      /\\.apk(?:["';]|$)/i.test(contentDisposition) ||
+      /\\.apk$/i.test(current.pathname);
+
+    if (!looksLikeApk || /text\\/(?:html|plain)/i.test(contentType)) {
+      await response.body.cancel().catch(() => {});
+      throw new Error("Upstream response is not an APK.");
+    }
+
+    return { response, finalUrl: current };
+  }
+
+  throw new Error("Too many APK redirects.");
+}
+
+function safeApkFilename(url, id, contentDisposition) {
+  const dispositionMatch = contentDisposition?.match(/filename\\*?=(?:UTF-8''|["']?)([^;"']+)/i);
+  const fromHeader = dispositionMatch?.[1] ? decodeURIComponent(dispositionMatch[1]).trim() : "";
+  const fromUrl = decodeURIComponent(url.pathname.split("/").filter(Boolean).pop() || "");
+  const raw = /\\.apk$/i.test(fromHeader) ? fromHeader : fromUrl;
+  const cleaned = raw.replace(/[^a-zA-Z0-9._-]/g, "_");
+  return /\\.apk$/i.test(cleaned) ? cleaned : "MahiFlix-" + id + ".apk";
 }
 
 app.get("/download/app/:id", async (req, res) => {
@@ -397,33 +505,16 @@ app.get("/download/app/:id", async (req, res) => {
     return res.status(404).send("App download not found.");
   }
 
-  const target = await resolveLatestAppDownload(id);
-
-  if (!target) {
-    return res.status(502).send("Unable to resolve the latest APK.");
-  }
-
   try {
-    const upstream = await fetch(target, {
-      redirect: "follow",
-      headers: {
-        "user-agent": "MahiFlix-App-Downloader/1.0",
-        "accept": "application/vnd.android.package-archive,application/octet-stream,*/*"
-      },
-      signal: AbortSignal.timeout(60_000)
-    });
+    const target = await resolveLatestAppDownload(id);
 
-    if (!upstream.ok || !upstream.body) {
-      return res.status(502).send("Unable to download the latest APK.");
+    if (!target) {
+      return res.status(502).send("No verified APK is currently available for this app.");
     }
 
-    const finalUrl = new URL(upstream.url || target);
-    const sourceName = decodeURIComponent(
-      finalUrl.pathname.split("/").filter(Boolean).pop() || ""
-    );
-    const filename = /\\.apk$/i.test(sourceName)
-      ? sourceName.replace(/[^a-zA-Z0-9._-]/g, "_")
-      : "MahiFlix-" + id + ".apk";
+    const { response: upstream, finalUrl } = await fetchApk(target, config);
+    const contentDisposition = upstream.headers.get("content-disposition") || "";
+    const filename = safeApkFilename(finalUrl, id, contentDisposition);
 
     res.status(200);
     res.setHeader("Cache-Control", "no-store");
@@ -438,7 +529,7 @@ app.get("/download/app/:id", async (req, res) => {
   } catch (error) {
     console.error("APK download failed:", id, error.message);
     if (!res.headersSent) {
-      res.status(502).send("Unable to download the latest APK.");
+      res.status(502).send("Unable to download a verified APK right now.");
     } else {
       res.destroy(error);
     }

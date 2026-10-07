@@ -236,25 +236,25 @@ const APP_DOWNLOADS = {
   },
   moviboxapk: {
     page: "https://moviboxapk.com/",
-    fallback: "https://file.dxmaxapk.com/moviebox-3-0-16-0805-03-moviboxapk.com.apk",
+    fallback: null,
     allowedHosts: ["moviboxapk.com", "file.dxmaxapk.com"],
     patterns: [/https?:\/\/[^"'\\s<>]+moviebox[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   pvrplay: {
     page: "https://pvrplay.online/",
-    fallback: "https://stream.phoasy.com/app/PvrPlay.apk",
+    fallback: null,
     allowedHosts: ["pvrplay.online", "stream.phoasy.com"],
     patterns: [/https?:\/\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   hdghartv: {
     page: "https://watch.hdghartv.com.pk/",
-    fallback: "https://download.hdghartv.com.pk/HDGharTV-V1.5.apk",
+    fallback: null,
     allowedHosts: ["watch.hdghartv.com.pk", "hdghartv.com.pk", "download.hdghartv.com.pk"],
     patterns: [/https?:\/\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   anivortex: {
     page: "https://anivortex.in/",
-    fallback: "https://anivortex.in/apk/anivortex_4.1.0.apk",
+    fallback: null,
     allowedHosts: ["anivortex.in"],
     patterns: [/https?:\/\/[^"'\\s<>]*\/apk\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
   },

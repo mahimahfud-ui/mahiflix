@@ -9,6 +9,7 @@ window.MAHIFLIX_LOGOS = {
   "watchott.org": "/assets/logos/watchott.svg",
   "1tube.org": "/assets/logos/1tube.svg",
   "cinejoy.to": "/assets/logos/cinejoy.svg",
+  "7movies.ac": "/assets/logos/7movies.svg",
   "7reels.cc": "/assets/logos/7reel.svg",
   "filmtvapp.com": "/assets/logos/filmtv.svg",
   "nuvixapp.in": "/assets/logos/nuvix.svg",

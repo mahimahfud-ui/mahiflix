@@ -187,11 +187,22 @@ function card(it,i,isTop){
     "<b>"+clean(it.name)+"</b><p>"+clean(it.desc)+"</p><p class='lang'>"+clean(it.langs)+"</p></div></div>";
 }
 
+function dedupeItems(items){
+  const seen=new Set();
+  return items.filter(function(it){
+    const key=String(it.name||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"")+
+      "|" + String(it.url||"").trim().toLowerCase().replace(/\/$/,"");
+    if(seen.has(key))return false;
+    seen.add(key);
+    return true;
+  });
+}
+
 function renderView(type){
   const el=document.getElementById(type==="sites"?"sitesView":"appsView");
   const data=type==="sites"?S:A;
   const label=type==="sites"?"Websites":"Apps";
-  const sorted=data.slice().sort((a,b)=>qualityScore(b)-qualityScore(a));
+  const sorted=dedupeItems(data.slice()).sort((a,b)=>qualityScore(b)-qualityScore(a));
   el.innerHTML=rowHTML(label,sorted,{kind:type==="sites"?"site":"app",note:"Your curated MahiFlix collection"});
 }
 

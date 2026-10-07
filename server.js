@@ -403,8 +403,46 @@ app.get("/download/app/:id", async (req, res) => {
     return res.status(502).send("Unable to resolve the latest APK.");
   }
 
-  res.setHeader("Cache-Control", "no-store");
-  res.redirect(302, target);
+  try {
+    const upstream = await fetch(target, {
+      redirect: "follow",
+      headers: {
+        "user-agent": "MahiFlix-App-Downloader/1.0",
+        "accept": "application/vnd.android.package-archive,application/octet-stream,*/*"
+      },
+      signal: AbortSignal.timeout(60_000)
+    });
+
+    if (!upstream.ok || !upstream.body) {
+      return res.status(502).send("Unable to download the latest APK.");
+    }
+
+    const finalUrl = new URL(upstream.url || target);
+    const sourceName = decodeURIComponent(
+      finalUrl.pathname.split("/").filter(Boolean).pop() || ""
+    );
+    const filename = /\\.apk$/i.test(sourceName)
+      ? sourceName.replace(/[^a-zA-Z0-9._-]/g, "_")
+      : "MahiFlix-" + id + ".apk";
+
+    res.status(200);
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("Content-Type", "application/vnd.android.package-archive");
+    res.setHeader("Content-Disposition", 'attachment; filename="' + filename + '"');
+
+    const length = upstream.headers.get("content-length");
+    if (length) res.setHeader("Content-Length", length);
+
+    const { Readable } = await import("node:stream");
+    Readable.fromWeb(upstream.body).pipe(res);
+  } catch (error) {
+    console.error("APK download failed:", id, error.message);
+    if (!res.headersSent) {
+      res.status(502).send("Unable to download the latest APK.");
+    } else {
+      res.destroy(error);
+    }
+  }
 });
 
 app.get("/api/health", (req, res) => {

@@ -188,14 +188,13 @@ function card(it,i,isTop){
 }
 
 function dedupeItems(items){
-  const seen=new Set();
-  return items.filter(function(it){
-    const key=String(it.name||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"")+
-      "|" + String(it.url||"").trim().toLowerCase().replace(/\/$/,"");
-    if(seen.has(key))return false;
-    seen.add(key);
-    return true;
+  const best=new Map();
+  items.forEach(function(it){
+    const key=String(it.name||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"");
+    const current=best.get(key);
+    if(!current || qualityScore(it)>qualityScore(current))best.set(key,it);
   });
+  return Array.from(best.values());
 }
 
 function renderView(type){

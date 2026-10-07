@@ -1,0 +1,23 @@
+window.MAHIFLIX_LOGOS = {
+  "cineyz.com": "https://cineyz.com/favicon.ico",
+  "7reels.cc": "https://7reels.cc/favicon.ico",
+  "plex.tv": "https://watch.plex.tv/favicon.ico",
+  "m4uhd.gold": "https://m4uhd.gold/images/m4uhd-logo.png",
+  "cinehd.vc": "https://cinehd.vc/logo.png",
+  "nightflix.vg": "https://nightflix.vg/favicon.ico",
+  "pvrplay.online": "https://pvrplay.online/favicon.ico",
+  "nightflix.to": "https://nightflix.to/favicon.ico",
+  "bingr.one": "https://bingr.one/favicon.ico",
+  "cinejoy.to": "https://cinejoy.to/favicon.svg",
+  "cinegram.tv": "https://cinegram.tv/sizes/fav-192.png",
+  "watchott.org": "https://watchott.org/favicon.svg",
+  "1tube.org": "https://www.1tube.org/favicon.ico",
+  "filmtvapp.com": "https://www.filmtvapp.com/favicon.ico",
+  "nuvixapp.in": "https://www.nuvixapp.in/favicon.ico",
+  "github.com": "https://raw.githubusercontent.com/vega-org/vega-app/main/assets/adaptive_icon.png",
+  "netmirror.gg": "https://netmirror.gg/favicon.ico",
+  "moviboxapk.com": "https://moviboxapk.com/favicon.ico",
+  "hdghartv.com.pk": "https://hdghartv.com.pk/favicon.png",
+  "anivortex.in": "https://anivortex.in/images/anivortex_logo.webp",
+  "nxsha.app": "https://nxsha.app/favicon.ico"
+};

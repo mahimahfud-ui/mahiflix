@@ -6,6 +6,7 @@ COPY package*.json ./
 RUN npm install --omit=dev
 
 COPY . .
+RUN node scripts/fetch-logos.mjs
 
 ENV NODE_ENV=production
 

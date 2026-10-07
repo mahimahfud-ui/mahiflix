@@ -220,55 +220,55 @@ const APP_DOWNLOADS = {
     page: "https://netmirror.gg/10/en-us",
     fallback: "https://netmiirror.app/app/NetMirror.apk",
     allowedHosts: ["netmirror.gg", "netmiirror.app"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
   },
   cinehd: {
     page: "https://cinehd.dev/",
     fallback: "https://cinehd.dev/download/global/CineHD-v1.1.4-(Universal).apk",
     allowedHosts: ["cinehd.dev"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]*CineHD[^"'\\s<>]*Universal[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\\s<>]*CineHD[^"'\\s<>]*Universal[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   moviboxapk: {
     page: "https://moviboxapk.com/",
     fallback: "https://file.dxmaxapk.com/moviebox-3-0-16-0805-03-moviboxapk.com.apk",
     allowedHosts: ["moviboxapk.com", "file.dxmaxapk.com"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+moviebox[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\\s<>]+moviebox[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   pvrplay: {
     page: "https://pvrplay.online/",
     fallback: "https://stream.phoasy.com/app/PvrPlay.apk",
     allowedHosts: ["pvrplay.online", "stream.phoasy.com"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   hdghartv: {
     page: "https://hdghartv.com.pk/apk/",
     fallback: "https://download.hdghartv.com.pk/HDGharTV-V1.5.apk",
     allowedHosts: ["hdghartv.com.pk", "download.hdghartv.com.pk"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   anivortex: {
     page: "https://anivortex.in/",
     fallback: "https://anivortex.in/apk/anivortex_4.1.0.apk",
     allowedHosts: ["anivortex.in"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]*\\/apk\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\\s<>]*\/apk\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
   },
   filmtv: {
     page: "https://www.filmtvapp.com/",
     fallback: null,
     allowedHosts: ["www.filmtvapp.com", "filmtvapp.com"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk(?:\\?[^"'\\s<>]*)?/i]
+    patterns: [/https?:\/\/[^"'\\s<>]+\.apk(?:\?[^"'\\s<>]*)?/i]
   },
   nuvix: {
     page: "https://www.nuvixapp.in/",
     fallback: null,
     allowedHosts: ["www.nuvixapp.in", "nuvixapp.in"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk(?:\\?[^"'\\s<>]*)?/i]
+    patterns: [/https?:\/\/[^"'\\s<>]+\.apk(?:\?[^"'\\s<>]*)?/i]
   },
   nxsha: {
     page: "https://nxsha.app/",
     fallback: "https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",
     allowedHosts: ["nxsha.app", "github.com"],
-    patterns: [/https?:\\/\\/[^"'\\s<>]+\\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
   }
 };
 
@@ -292,7 +292,7 @@ function allowedDownloadUrl(url, config) {
     url &&
     url.protocol === "https:" &&
     config.allowedHosts.includes(url.hostname) &&
-    /\\.apk$/i.test(url.pathname)
+    /\.apk$/i.test(url.pathname)
   );
 }
 
@@ -309,12 +309,12 @@ function extractLatestApk(html, config) {
   }
 
   // Handle relative APK links used by many download pages.
-  for (const match of html.matchAll(/(?:href|src|data-href|data-url)\\s*=\\s*["']([^"']+\\.apk(?:\\?[^"']*)?)["']/gi)) {
+  for (const match of html.matchAll(/(?:href|src|data-href|data-url)\s*=\s*["']([^"']+\.apk(?:\?[^"']*)?)["']/gi)) {
     addCandidate(match[1]);
   }
 
   // Also catch quoted absolute/relative APK URLs embedded in scripts.
-  for (const match of html.matchAll(/["']((?:https?:\\/\\/|\\/)[^"'\\s<>]+\\.apk(?:\\?[^"'\\s<>]*)?)["']/gi)) {
+  for (const match of html.matchAll(/["']((?:https?:\/\/|\/)[^"'\\s<>]+\.apk(?:\?[^"'\\s<>]*)?)["']/gi)) {
     addCandidate(match[1]);
   }
 
@@ -353,8 +353,6 @@ async function fetchResolverPage(url, config) {
       throw new Error("Resolver redirect rejected.");
     }
 
-    // GitHub's release API is intentionally allowed only for the API lookup,
-    // while all non-GitHub app pages must remain on their configured hosts.
     const resolverHosts = config.githubLatest ? ["api.github.com"] : config.allowedHosts;
     if (!resolverHosts.includes(next.hostname)) {
       throw new Error("Resolver redirect host rejected: " + next.hostname);
@@ -473,11 +471,11 @@ async function fetchApk(url, config) {
     const contentType = (response.headers.get("content-type") || "").toLowerCase();
     const contentDisposition = response.headers.get("content-disposition") || "";
     const looksLikeApk =
-      /application/vnd\\.android\\.package-archive/i.test(contentType) ||
-      /\\.apk(?:["';]|$)/i.test(contentDisposition) ||
-      /\\.apk$/i.test(current.pathname);
+      /application\/vnd\.android\.package-archive/i.test(contentType) ||
+      /\.apk(?:["';]|$)/i.test(contentDisposition) ||
+      /\.apk$/i.test(current.pathname);
 
-    if (!looksLikeApk || /text\\/(?:html|plain)/i.test(contentType)) {
+    if (!looksLikeApk || /text\/(?:html|plain)/i.test(contentType)) {
       await response.body.cancel().catch(() => {});
       throw new Error("Upstream response is not an APK.");
     }
@@ -489,12 +487,12 @@ async function fetchApk(url, config) {
 }
 
 function safeApkFilename(url, id, contentDisposition) {
-  const dispositionMatch = contentDisposition?.match(/filename\\*?=(?:UTF-8''|["']?)([^;"']+)/i);
+  const dispositionMatch = contentDisposition?.match(/filename\*?=(?:UTF-8''|["']?)([^;"']+)/i);
   const fromHeader = dispositionMatch?.[1] ? decodeURIComponent(dispositionMatch[1]).trim() : "";
   const fromUrl = decodeURIComponent(url.pathname.split("/").filter(Boolean).pop() || "");
-  const raw = /\\.apk$/i.test(fromHeader) ? fromHeader : fromUrl;
+  const raw = /\.apk$/i.test(fromHeader) ? fromHeader : fromUrl;
   const cleaned = raw.replace(/[^a-zA-Z0-9._-]/g, "_");
-  return /\\.apk$/i.test(cleaned) ? cleaned : "MahiFlix-" + id + ".apk";
+  return /\.apk$/i.test(cleaned) ? cleaned : "MahiFlix-" + id + ".apk";
 }
 
 app.get("/download/app/:id", async (req, res) => {

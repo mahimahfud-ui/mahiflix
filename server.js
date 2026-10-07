@@ -220,7 +220,7 @@ const APP_DOWNLOADS = {
     fallback: "https://github.com/vega-org/vega-app/releases/latest",
     allowedHosts: ["github.com"],
     githubLatest: true,
-    assetPattern: { test: (name) => /\\.apk$/i.test(String(name || "")) && /vega/i.test(String(name || "")) }
+    assetPattern: { test: (name) => /\.apk$/i.test(String(name || "")) && /vega/i.test(String(name || "")) }
   },
   netmirror: {
     page: "https://netmirror.gg/10/en-us",

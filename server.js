@@ -217,10 +217,10 @@ const APP_DOWNLOADS = {
   },
   vega: {
     page: "https://api.github.com/repos/vega-org/vega-app/releases/latest",
-    fallback: "https://github.com/vega-org/vega-app/releases/latest/download/vega-mobile-universal-v5.0.0.apk",
+    fallback: "https://github.com/vega-org/vega-app/releases/latest",
     allowedHosts: ["github.com"],
     githubLatest: true,
-    assetPattern: { test: (name) => String(name || "").toLowerCase().startsWith("vega-mobile-universal-") && String(name || "").toLowerCase().endsWith(".apk") }
+    assetPattern: { test: (name) => /\\.apk$/i.test(String(name || "")) && /vega/i.test(String(name || "")) }
   },
   netmirror: {
     page: "https://netmirror.gg/10/en-us",
@@ -428,12 +428,17 @@ async function resolveLatestAppDownload(id) {
     console.warn("App download resolver fallback:", id, error.message);
   }
 
-  if (config.fallback && allowedDownloadUrl(new URL(config.fallback), config)) {
-    appDownloadCache.set(id, {
-      checkedAt: Date.now(),
-      url: config.fallback
-    });
-    return config.fallback;
+  if (config.fallback) {
+    try {
+      const fallbackUrl = new URL(config.fallback);
+      if (fallbackUrl.protocol === "https:" && (config.allowedHosts || []).includes(fallbackUrl.hostname)) {
+        appDownloadCache.set(id, {
+          checkedAt: Date.now(),
+          url: fallbackUrl.toString()
+        });
+        return fallbackUrl.toString();
+      }
+    } catch {}
   }
 
   appDownloadCache.delete(id);
@@ -516,20 +521,17 @@ app.get("/download/app/:id", async (req, res) => {
       return res.status(502).send("No verified APK is currently available for this app.");
     }
 
-    const { response: upstream, finalUrl } = await fetchApk(target, config);
-    const contentDisposition = upstream.headers.get("content-disposition") || "";
-    const filename = safeApkFilename(finalUrl, id, contentDisposition);
+    // Return the verified upstream APK URL directly. This avoids proxy-streaming
+    // large APK files through the MahiFlix server and makes the browser handle
+    // the download from the source host.
+    if (!/^https:\/\//i.test(target)) {
+      throw new Error("Resolved APK URL must use HTTPS.");
+    }
 
-    res.status(200);
+    res.status(302);
     res.setHeader("Cache-Control", "no-store");
-    res.setHeader("Content-Type", "application/vnd.android.package-archive");
-    res.setHeader("Content-Disposition", 'attachment; filename="' + filename + '"');
-
-    const length = upstream.headers.get("content-length");
-    if (length) res.setHeader("Content-Length", length);
-
-    const { Readable } = await import("node:stream");
-    Readable.fromWeb(upstream.body).pipe(res);
+    res.setHeader("Location", target);
+    return res.end();
   } catch (error) {
     console.error("APK download failed:", id, error.message);
     if (!res.headersSent) {

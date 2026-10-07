@@ -428,10 +428,10 @@ async function resolveLatestAppDownload(id) {
     console.warn("App download resolver fallback:", id, error.message);
   }
 
-  if (config.fallback) {
+  if (config.fallback && !config.githubLatest) {
     try {
       const fallbackUrl = new URL(config.fallback);
-      if (fallbackUrl.protocol === "https:" && (config.allowedHosts || []).includes(fallbackUrl.hostname)) {
+      if (fallbackUrl.protocol === "https:" && allowedDownloadUrl(fallbackUrl, config)) {
         appDownloadCache.set(id, {
           checkedAt: Date.now(),
           url: fallbackUrl.toString()

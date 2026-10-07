@@ -7,16 +7,18 @@ export function initInteractions({ invalidate, refresh }) {
   const fine = matchMedia('(hover:hover) and (pointer:fine)');
 
   // ---- pointer → scene parallax + card lighting/tilt (one rAF-batched handler) ----
-  let pe = null, raf = 0, hovered = null;
+  let pe = null, raf = 0, hovered = null, hoveredRect = null;
   function apply() {
     raf = 0; if (!pe) return;
     state.px = (pe.clientX / innerWidth) * 2 - 1;
     state.py = (pe.clientY / innerHeight) * 2 - 1;
     const card = pe.target.closest && pe.target.closest('.card.live');
     if (hovered && hovered !== card) release(hovered);
+    if (hovered !== card) hoveredRect = null;
     hovered = card;
     if (!card || state.reduced) return;
-    const r = card.getBoundingClientRect();
+    if (!hoveredRect) hoveredRect = card.getBoundingClientRect();
+    const r = hoveredRect;
     const nx = (pe.clientX - r.left) / r.width, ny = (pe.clientY - r.top) / r.height;
     card.style.setProperty('--mx', (nx * 100).toFixed(1) + '%');
     card.style.setProperty('--my', (ny * 100).toFixed(1) + '%');
@@ -27,7 +29,9 @@ export function initInteractions({ invalidate, refresh }) {
   function release(c) { c.style.rotate = ''; }
   if (fine.matches) {
     addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; pe = e; if (!raf) raf = requestAnimationFrame(apply); }, { passive: true });
-    document.addEventListener('pointerleave', () => { if (hovered) release(hovered); hovered = null; state.px = state.py = 0; });
+    document.addEventListener('pointerleave', () => { if (hovered) release(hovered); hovered = null; hoveredRect = null; state.px = state.py = 0; });
+    addEventListener('scroll', () => { hoveredRect = null; }, { passive: true });
+    addEventListener('resize', () => { hoveredRect = null; }, { passive: true });
   }
 
   // ---- mode switch: shift the scene's mood and fire a light pulse ----

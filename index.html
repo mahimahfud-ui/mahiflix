@@ -183,10 +183,12 @@ function card(it,i,isTop){
   const nw=it.new?"<span class='badge'>NEW</span>":"";
   const ad=it.ads<2?"<span class='ad "+adClass[it.ads]+"'>"+(it.ads===0?"NO AD":"LESS AD")+"</span>":"";
   const url=linkOf(it);
-  return "<div class='card logo-card live' tabindex='0' role='link' style='--c1:"+c1+";--c2:"+c2+"' data-name='"+clean(it.name.toLowerCase())+"'>"+
+  const isApp=it.kind==="app";
+  const downloadAttr=isApp?" download":"";
+  return "<div class='card logo-card live' tabindex='0' role='link' data-kind='"+(isApp?"app":"site")+"' data-download='"+(isApp?clean(url):"")+"' style='--c1:"+c1+";--c2:"+c2+"' data-name='"+clean(it.name.toLowerCase())+"'>"+
     num+logoHTML(it)+nw+ad+
-    "<a class='cap' href='"+url+"' target='_blank' rel='noopener noreferrer'>"+clean(it.name)+(it.kind==="app"?" · App":"")+"</a>"+
-    "<div class='more'><div class='actions'><a class='round go' href='"+url+"' target='_blank' rel='noopener noreferrer' aria-label='Open "+clean(it.name)+"'>"+svgPlay()+"</a><button class='round fav' aria-label='Add to My List'>"+svgPlus()+"</button></div>"+
+    "<a class='cap' href='"+url+"'"+(isApp?downloadAttr+" aria-label='Download "+clean(it.name)+" APK'":" target='_blank' rel='noopener noreferrer'")+" >"+clean(it.name)+(isApp?" · App":"")+"</a>"+
+    "<div class='more'><div class='actions'><a class='round go' href='"+url+"'"+(isApp?downloadAttr+" aria-label='Download "+clean(it.name)+" APK'":" target='_blank' rel='noopener noreferrer'")+" >"+svgPlay()+"</a><button class='round fav' aria-label='Add to My List'>"+svgPlus()+"</button></div>"+
     "<b>"+clean(it.name)+"</b><p>"+clean(it.desc)+"</p><p class='lang'>"+clean(it.langs)+"</p></div></div>";
 }
 
@@ -229,6 +231,14 @@ document.querySelectorAll(".rail").forEach(function(r){
   r.querySelector(".r").onclick=function(){t.scrollBy({left:t.clientWidth*.82,behavior:"smooth"})};
 });
 document.addEventListener("click",function(e){
+  var appCard=e.target.closest(".card[data-kind='app']");
+  if(appCard && !e.target.closest(".fav") && !e.target.closest("a")){
+    var downloadUrl=appCard.getAttribute("data-download");
+    if(downloadUrl){
+      e.preventDefault();
+      window.location.href=downloadUrl;
+    }
+  }
   var f=e.target.closest(".fav");
   if(f){
     var on=f.dataset.on==="1";

@@ -209,6 +209,12 @@ const APP_RESOLVER_TIMEOUT_MS = 12_000;
 const APP_MAX_REDIRECTS = 5;
 
 const APP_DOWNLOADS = {
+  "7reel": {
+    page: "https://7reels.cc/download",
+    fallback: null,
+    allowedHosts: ["7reels.cc"],
+    patterns: [/https?:\\/\\/[^"']+\\.apk(?:\\?[^"']*)?/i]
+  },
   vega: {
     page: "https://api.github.com/repos/vega-org/vega-app/releases/latest",
     fallback: "https://github.com/vega-org/vega-app/releases/latest/download/vega-mobile-universal-v5.0.0.apk",

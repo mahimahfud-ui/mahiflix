@@ -37,7 +37,7 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
 
 .intro{display:none}.intro-on .intro{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:#000;cursor:pointer;transition:opacity .7s cubic-bezier(.22,1,.36,1);will-change:opacity}.intro-on nav,.intro-on .hero,.intro-on .mode-wrap,.intro-on main,.intro-on footer{opacity:0}.intro-leave nav,.intro-leave .hero,.intro-leave .mode-wrap,.intro-leave main,.intro-leave footer{opacity:1}.intro-leave .intro{opacity:0;pointer-events:none}.intro .intro-logo{width:clamp(150px,28vw,280px);height:clamp(150px,28vw,280px);background:url('/m-logo-v2.svg') center/contain no-repeat;transform:scaleY(1.14);opacity:0;animation:rev 1.4s cubic-bezier(.2,.7,.2,1) .12s forwards;text-shadow:0 0 40px rgba(229,9,20,.25)}.intro:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(229,9,20,.38),transparent 60%);opacity:0;animation:glow 2s .1s forwards}@keyframes rev{from{opacity:0;transform:translate3d(0,8px,0) scale(1.12) scaleY(1.14);filter:blur(12px)}55%{opacity:1;transform:translate3d(0,0,0) scale(1.018) scaleY(1.14);filter:blur(0)}to{opacity:1;transform:translate3d(0,0,0) scale(1) scaleY(1.14);filter:blur(0)}}@keyframes glow{to{opacity:1}}@keyframes cardIn{0%{opacity:0;transform:translate3d(0,22px,0) scale(.965);filter:blur(7px)}55%{opacity:.92;transform:translate3d(0,3px,0) scale(.992);filter:blur(1px)}100%{opacity:1;transform:translate3d(0,0,0) scale(1);filter:blur(0)}}
 @media(min-width:761px){.card.live{transform-origin:center center}.card.live:hover,.card.live:focus-within{transform:translate3d(0,-10px,0) scale(1.065)}}
-@media(max-width:760px){nav{gap:12px;padding:12px 4%}nav .logo{font-size:31px}nav ul{display:none}.search.open input{width:145px}.hero{min-height:0;padding:78px 4% 6px}.hero h1{font-size:70px}.mode-wrap{margin:4px 4% 14px}.mode{padding:11px 15px}.arrow{display:none}.card.live:hover,.card.live:focus-within{transform:translateY(-4px) scale(1.035)}.card .more{display:none}.card .cap{display:block!important}.row h2{font-size:17px}.row-note{display:none}}
+@media(max-width:760px){nav{gap:12px;padding:12px 4%}nav .logo{font-size:31px}nav ul{display:none}.search.open input{width:145px}.hero{min-height:0;padding:78px 4% 6px}.hero h1{font-size:70px}.mode-wrap{margin:4px 4% 14px}.mode{padding:11px clamp(7px,2.3vw,15px);font-size:12px}.arrow{display:none}.card.live:hover,.card.live:focus-within{transform:translateY(-4px) scale(1.035)}.card .more{display:none}.card .cap{display:block!important}.row h2{font-size:17px}.row-note{display:none}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 <link rel="stylesheet" href="/cinema/cinema.css">
@@ -70,12 +70,14 @@ footer{text-align:center;color:#666;padding:30px 4% 44px;font-size:12px}footer .
   <div class="mode-switch" role="tablist" aria-label="MahiFlix categories">
     <button class="mode active" data-mode="sites" role="tab" aria-selected="true">WEBSITES</button>
     <button class="mode" data-mode="apps" role="tab" aria-selected="false">APPS</button>
+    <button class="mode" data-mode="music" role="tab" aria-selected="false">MUSIC APPS</button>
   </div>
 </div>
 
 <main>
   <div id="sitesView" class="view active"></div>
   <div id="appsView" class="view"></div>
+  <div id="musicView" class="view"></div>
   <p id="empty" class="empty">Nothing matched your search.</p>
 </main>
 
@@ -118,6 +120,10 @@ const A=[
 {name:"Anivortex",url:"https://anivortex.in/apk/anivortex_5.0.2.apk",domain:"anivortex.in",ads:1,pop:70,smooth:72,langs:80,new:false,desc:"Anime-focused streaming app.",logoSources:["https://anivortex.in/images/anivortex_logo_transparent.webp","https://anivortex.in/images/anivortex_logo.webp","https://anivortex.in/apple-touch-icon.png","https://anivortex.in/favicon.png","https://anivortex.in/favicon.ico"]},
 {name:"Nxsha",url:"https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",domain:"nxsha.app",ads:1,pop:74,smooth:84,langs:90,new:false,desc:"Movies, TV, anime and K-drama discovery app.",logoSources:["https://nxsha.app/apple-touch-icon.png","https://nxsha.app/icon-192.png","https://nxsha.app/favicon.png","https://nxsha.app/favicon.ico"]},
 {name:"DooFlix",url:"https://dooflixapk.com/apk/DooFlix_v10.5.apk",domain:"dooflixapk.com",ads:1,pop:70,smooth:78,langs:76,new:true,desc:"DooFlix Android app — direct APK download.",logoSources:["https://dooflixapk.com/logo.png","https://dooflixapk.com/apple-touch-icon.png","https://dooflixapk.com/favicon.png","https://dooflixapk.com/favicon.ico"]}
+];
+
+const M=[
+{name:"Demus",kind:"app",url:"https://en.softonic.com/download/demus/android/post-download?dt=internalDownload",domain:"demus.en.softonic.com",ads:1,pop:76,smooth:82,langs:86,new:true,desc:"Demus music app for Android.",logoSources:["https://images.sftcdn.net/images/t_app-icon-s/p/2b0597be-ed36-477e-990e-7fd7e34cc5c1/1880695670/demus-download-Demus.jpg","https://demus.en.softonic.com/favicon.ico","https://en.softonic.com/favicon.ico"]}
 ];
 
 const adLabel=["No / minimal ads","Some ads","More / heavier ads"];
@@ -232,15 +238,19 @@ function dedupeItems(items){
 }
 
 function renderView(type){
-  const el=document.getElementById(type==="sites"?"sitesView":"appsView");
-  const data=type==="sites"?S:A;
-  const label=type==="sites"?"Websites":"Apps";
+  const viewIds={sites:"sitesView",apps:"appsView",music:"musicView"};
+  const dataSets={sites:S,apps:A,music:M};
+  const labels={sites:"Websites",apps:"Apps",music:"Music Apps"};
+  const el=document.getElementById(viewIds[type]);
+  const data=dataSets[type];
+  const label=labels[type];
   const sorted=dedupeItems(data.slice()).sort((a,b)=>qualityScore(b)-qualityScore(a));
   el.innerHTML=rowHTML(label,sorted,{kind:type==="sites"?"site":"app",note:"Your curated MahiFlix collection"});
 }
 
 renderView("sites");
 renderView("apps");
+renderView("music");
 document.querySelectorAll('.track').forEach(function(t){t.querySelectorAll('.card').forEach(function(card,i){card.style.animationDelay=(Math.min(i,8)*55)+'ms'})});
 function svgPlay(){return "<svg viewBox='0 0 24 24' fill='currentColor'><path d='M6 4l14 8-14 8z'/></svg>"}
 function svgPlus(){return "<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round'><path d='M12 5v14M5 12h14'/></svg>"}
@@ -259,6 +269,7 @@ document.querySelectorAll(".mode").forEach(function(btn){
     var mode=btn.dataset.mode;
     document.getElementById("sitesView").classList.toggle("active",mode==="sites");
     document.getElementById("appsView").classList.toggle("active",mode==="apps");
+    document.getElementById("musicView").classList.toggle("active",mode==="music");
     document.getElementById("q").value="";
     document.getElementById("empty").style.display="none";
       });
@@ -288,7 +299,7 @@ document.addEventListener("click",function(e){
   var cardEl=e.target.closest(".card");
   if(cardEl && !e.target.closest("a,button")){
     var name=cardEl.dataset.name||"";
-    var current=(document.querySelector(".view.active")===document.getElementById("appsView"))?A:S;
+    var activeView=document.querySelector(".view.active");var current=activeView===document.getElementById("musicView")?M:(activeView===document.getElementById("appsView")?A:S);
     var item=current.find(function(x){return x.name.toLowerCase()===name;});
     if(item && item.url)window.open(item.url,"_blank","noopener,noreferrer");
   }
@@ -299,7 +310,7 @@ document.addEventListener("keydown",function(e){
   if(!cardEl || e.target.closest("a,button"))return;
   e.preventDefault();
   var name=cardEl.dataset.name||"";
-  var current=(document.querySelector(".view.active")===document.getElementById("appsView"))?A:S;
+  var activeView=document.querySelector(".view.active");var current=activeView===document.getElementById("musicView")?M:(activeView===document.getElementById("appsView")?A:S);
   var item=current.find(function(x){return x.name.toLowerCase()===name;});
   if(item && item.url)window.open(item.url,"_blank","noopener,noreferrer");
 });

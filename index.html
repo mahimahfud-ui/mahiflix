@@ -160,7 +160,8 @@ function logoHTML(it){
     base+"/favicon-192x192.png",
     base+"/logo.png"
   ];
-  const sources=[...new Set([...curated,...highResCandidates,google512,google,googleV2,...direct,duck].filter(Boolean))];
+  const local=(window.MAHIFLIX_LOGOS&&window.MAHIFLIX_LOGOS[it.domain])||"";
+  const sources=[...new Set([...curated,...highResCandidates,google512,google,googleV2,...direct,duck,local].filter(Boolean))];
   if(!sources.length){
     const fallbackSvg='<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><rect width="1024" height="1024" rx="180" fill="#090909"/><text x="512" y="560" text-anchor="middle" font-family="Arial,sans-serif" font-size="170" font-weight="800" fill="#fff">'+encodeURIComponent(initials(it.name))+'</text></svg>';
     sources.push('data:image/svg+xml;charset=UTF-8,'+fallbackSvg);
@@ -229,7 +230,7 @@ function card(it,i,isTop){
   const url=linkOf(it);
   const isApp=it.kind==="app";
   const downloadAttr=isApp?" download":"";
-  return "<div class='card logo-card live' tabindex='0' role='link' data-kind='"+(isApp?"app":"site")+"' data-download='"+(isApp?clean(url):"")+"' style='--c1:"+c1+";--c2:"+c2+"' data-name='"+clean(it.name.toLowerCase())+"'>"+
+  return "<div class='card logo-card live' tabindex='0' role='link' data-kind='"+(isApp?"app":"site")+"' data-download='"+(isApp?clean(url):"")+"' style='--c1:"+c1+";--c2:"+c2+"' data-name='"+clean(it.name.toLowerCase())+"' data-search='"+clean((it.name+" "+it.domain).toLowerCase())+"' data-url='"+clean(url)+"'>"+
     num+logoHTML(it)+nw+ad+
     "<a class='cap' href='"+url+"'"+(isApp?downloadAttr+" aria-label='Download "+clean(it.name)+" APK'":" target='_blank' rel='noopener noreferrer'")+" >"+clean(it.name)+(isApp?" · App":"")+"</a>"+
     "<div class='more'><div class='actions'><a class='round go' href='"+url+"'"+(isApp?downloadAttr+" aria-label='Download "+clean(it.name)+" APK'":" target='_blank' rel='noopener noreferrer'")+" >"+svgPlay()+"</a><button class='round fav' aria-label='Add to My List'>"+svgPlus()+"</button></div>"+
@@ -271,6 +272,27 @@ function rowHTML(title,items,opts){
 }
 
 
+var modeSwitch=document.querySelector(".mode-switch");
+var thumb=document.createElement("span");thumb.className="mode-thumb";thumb.setAttribute("aria-hidden","true");modeSwitch.insertBefore(thumb,modeSwitch.firstChild);
+function moveThumb(instant){
+  var a=modeSwitch.querySelector(".mode.active");if(!a)return;
+  if(instant)thumb.style.transition="none";
+  thumb.style.width=a.offsetWidth+"px";thumb.style.transform="translate3d("+a.offsetLeft+"px,0,0)";
+  modeSwitch.classList.add("has-thumb");
+  if(instant){void thumb.offsetWidth;thumb.style.transition=""}
+}
+function replayCards(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var cards=[].slice.call(document.querySelectorAll(".view.active .card")).filter(function(c){return c.style.display!=="none"});
+  cards.forEach(function(c,i){c.style.animation="none";c.style.animationDelay=Math.min(i,8)*45+"ms"});
+  void document.body.offsetWidth;
+  cards.forEach(function(c){c.style.animation=""});
+}
+addEventListener("resize",function(){moveThumb(true)});
+addEventListener("load",function(){moveThumb(true)});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){moveThumb(true)});
+moveThumb(true);
+
 document.querySelectorAll(".mode").forEach(function(btn){
   btn.addEventListener("click",function(){
     document.querySelectorAll(".mode").forEach(function(x){x.classList.remove("active");x.setAttribute("aria-selected","false")});
@@ -279,9 +301,10 @@ document.querySelectorAll(".mode").forEach(function(btn){
     document.getElementById("sitesView").classList.toggle("active",mode==="sites");
     document.getElementById("appsView").classList.toggle("active",mode==="apps");
     document.getElementById("musicView").classList.toggle("active",mode==="music");
-    document.getElementById("q").value="";
+    if(q.value){q.value="";applyFilter()}
     document.getElementById("empty").style.display="none";
-      });
+    moveThumb();replayCards();
+  });
 });
 
 document.querySelectorAll(".rail").forEach(function(r){
@@ -289,52 +312,51 @@ document.querySelectorAll(".rail").forEach(function(r){
   r.querySelector(".l").onclick=function(){t.scrollBy({left:-t.clientWidth*.82,behavior:"smooth"})};
   r.querySelector(".r").onclick=function(){t.scrollBy({left:t.clientWidth*.82,behavior:"smooth"})};
 });
+function openCard(cardEl){
+  var url=cardEl.getAttribute("data-url");
+  if(!url)return;
+  if(url.charAt(0)==="/"){window.location.assign(url);return}
+  window.open(url,"_blank","noopener,noreferrer");
+}
 document.addEventListener("click",function(e){
-  var appCard=e.target.closest(".card[data-kind='app']");
-  if(appCard && !e.target.closest(".fav") && !e.target.closest("a")){
-    var downloadUrl=appCard.getAttribute("data-download");
-    if(downloadUrl){
-      e.preventDefault();
-      window.location.href=downloadUrl;
-    }
-  }
   var f=e.target.closest(".fav");
   if(f){
     var on=f.dataset.on==="1";
     f.dataset.on=on?"":"1";
     f.innerHTML=on?svgPlus():"<svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12l5 5 9-10'/></svg>";
+    f.classList.remove("pop");void f.offsetWidth;f.classList.add("pop");
     return;
   }
   var cardEl=e.target.closest(".card");
-  if(cardEl && !e.target.closest("a,button")){
-    var name=cardEl.dataset.name||"";
-    var activeView=document.querySelector(".view.active");var current=activeView===document.getElementById("musicView")?M:(activeView===document.getElementById("appsView")?A:S);
-    var item=current.find(function(x){return x.name.toLowerCase()===name;});
-    if(item && item.url)window.open(item.url,"_blank","noopener,noreferrer");
-  }
+  if(cardEl&&!e.target.closest("a,button"))openCard(cardEl);
 });
 document.addEventListener("keydown",function(e){
-  if(e.key!=="Enter" && e.key!==" ")return;
+  if(e.key!=="Enter"&&e.key!==" ")return;
   var cardEl=e.target.closest(".card");
-  if(!cardEl || e.target.closest("a,button"))return;
+  if(!cardEl||e.target.closest("a,button"))return;
   e.preventDefault();
-  var name=cardEl.dataset.name||"";
-  var activeView=document.querySelector(".view.active");var current=activeView===document.getElementById("musicView")?M:(activeView===document.getElementById("appsView")?A:S);
-  var item=current.find(function(x){return x.name.toLowerCase()===name;});
-  if(item && item.url)window.open(item.url,"_blank","noopener,noreferrer");
+  openCard(cardEl);
 });
 
 var sb=document.getElementById("search"),q=document.getElementById("q");
-document.getElementById("sbtn").onclick=function(){sb.classList.toggle("open");if(sb.classList.contains("open"))q.focus()};
-q.addEventListener("input",function(){
-  var v=q.value.trim().toLowerCase(),active=document.querySelector(".view.active"),any=false;
-  active.querySelectorAll(".row-section").forEach(function(r){
-    var count=0;
-    r.querySelectorAll(".card").forEach(function(c){var m=!v||c.dataset.name.indexOf(v)>-1;c.style.display=m?"":"none";if(m)count++});
-    r.style.display=count?"":"none";if(count)any=true;
+function applyFilter(){
+  var v=q.value.trim().toLowerCase(),any=false;
+  document.querySelectorAll(".view").forEach(function(view){
+    var isActive=view.classList.contains("active");
+    view.querySelectorAll(".row-section").forEach(function(r){
+      var count=0;
+      r.querySelectorAll(".card").forEach(function(c){var m=!v||(c.dataset.search||c.dataset.name).indexOf(v)>-1;c.style.display=m?"":"none";if(m)count++});
+      r.style.display=count?"":"none";
+      if(count&&isActive)any=true;
+    });
   });
-  document.getElementById("empty").style.display=any?"none":"block";
-});
+  document.getElementById("empty").style.display=(any||!v)?"none":"block";
+}
+document.getElementById("sbtn").onclick=function(){
+  var open=sb.classList.toggle("open");
+  if(open)q.focus();else if(q.value){q.value="";applyFilter()}
+};
+q.addEventListener("input",applyFilter);
 
 var nav=document.getElementById("nav");
 addEventListener("scroll",function(){nav.classList.toggle("solid",scrollY>40)},{passive:true});

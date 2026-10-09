@@ -21,7 +21,33 @@ const rateBuckets = new Map();
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
-app.use(express.static(__dirname));
+
+// Optional gzip compression: used only if the "compression" package is installed.
+try {
+  const { default: compression } = await import("compression");
+  app.use(compression());
+} catch {}
+
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  next();
+});
+
+// Never serve server-side / build files through the static handler.
+const PRIVATE_PATH = /^\/(?:server\.js|package(?:-lock)?\.json|Dockerfile|metadata\.json|scripts(?:\/|$)|\.github(?:\/|$)|\.git(?:\/|$)|node_modules(?:\/|$))/i;
+app.use((req, res, next) => (PRIVATE_PATH.test(req.path) ? res.status(404).send("Not found.") : next()));
+app.use(express.static(__dirname, {
+  index: false,
+  etag: true,
+  setHeaders(res, filePath) {
+    if (/[\\/](?:vendor|assets)[\\/]/.test(filePath) || /\.(?:svg|png|ico|webp)$/i.test(filePath)) {
+      res.setHeader("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800");
+    } else {
+      res.setHeader("Cache-Control", "no-cache");
+    }
+  }
+}));
 
 function clientIp(req) {
   return (
@@ -327,6 +353,8 @@ const APP_DOWNLOADS = {
 };
 
 const appDownloadCache = new Map();
+const appDownloadInflight = new Map();
+const APP_NEGATIVE_CACHE_MS = 15_000;
 
 function normalizeHref(raw, baseUrl) {
   const value = String(raw)
@@ -418,14 +446,24 @@ async function fetchResolverPage(url, config) {
   throw new Error("Too many resolver redirects.");
 }
 
-async function resolveLatestAppDownload(id) {
+function resolveLatestAppDownload(id) {
   const config = APP_DOWNLOADS[id];
-  if (!config) return null;
+  if (!config) return Promise.resolve(null);
 
   const cached = appDownloadCache.get(id);
-  if (cached && Date.now() - cached.checkedAt < APP_DOWNLOAD_CACHE_MS) {
-    return cached.url;
+  if (cached && Date.now() - cached.checkedAt < (cached.url ? APP_DOWNLOAD_CACHE_MS : APP_NEGATIVE_CACHE_MS)) {
+    return Promise.resolve(cached.url);
   }
+
+  // Many people tapping the same app at once share one upstream lookup.
+  if (!appDownloadInflight.has(id)) {
+    appDownloadInflight.set(id, resolveLatestAppDownloadUncached(id).finally(() => appDownloadInflight.delete(id)));
+  }
+  return appDownloadInflight.get(id);
+}
+
+async function resolveLatestAppDownloadUncached(id) {
+  const config = APP_DOWNLOADS[id];
 
   try {
     if (config.githubLatest) {
@@ -489,7 +527,7 @@ async function resolveLatestAppDownload(id) {
     } catch {}
   }
 
-  appDownloadCache.delete(id);
+  appDownloadCache.set(id, { checkedAt: Date.now(), url: null });
   return null;
 }
 
@@ -554,19 +592,33 @@ function safeApkFilename(url, id, contentDisposition) {
   return /\.apk$/i.test(cleaned) ? cleaned : "MahiFlix-" + id + ".apk";
 }
 
+function errorPage(res, status, title, message, backHref = "/") {
+  res.status(status).setHeader("Cache-Control", "no-store").type("html").send(
+    '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' +
+    "<title>" + title + " · MahiFlix</title><style>" +
+    "html,body{height:100%;margin:0;background:#0d0d0e;color:#fff;font-family:Inter,system-ui,-apple-system,sans-serif}" +
+    "body{display:grid;place-items:center;text-align:center;padding:24px;box-sizing:border-box}" +
+    "img{width:84px;height:84px;filter:drop-shadow(0 0 28px rgba(229,9,20,.45));margin-bottom:18px}" +
+    "h1{margin:0 0 8px;font-size:22px}p{margin:0 auto 22px;max-width:420px;color:#a7a7a7;line-height:1.5}" +
+    "a{display:inline-block;background:#fff;color:#000;font-weight:800;padding:12px 24px;border-radius:6px;text-decoration:none}" +
+    "</style></head><body><main><img src=\"/m-logo-v2.svg\" alt=\"\"><h1>" + title + "</h1><p>" + message +
+    '</p><a href="' + backHref + '">Back to MahiFlix</a></main></body></html>'
+  );
+}
+
 app.get("/download/app/:id", async (req, res) => {
   const id = String(req.params.id || "").toLowerCase();
   const config = APP_DOWNLOADS[id];
 
   if (!config) {
-    return res.status(404).send("App download not found.");
+    return errorPage(res, 404, "App not found", "We couldn't find that app download.");
   }
 
   try {
     const target = await resolveLatestAppDownload(id);
 
     if (!target) {
-      return res.status(502).send("No verified APK is currently available for this app.");
+      return errorPage(res, 502, "Download unavailable", "No verified APK is available for this app right now. Please try again in a minute.");
     }
 
     // Return the verified upstream APK URL directly. This avoids proxy-streaming
@@ -583,7 +635,7 @@ app.get("/download/app/:id", async (req, res) => {
   } catch (error) {
     console.error("APK download failed:", id, error.message);
     if (!res.headersSent) {
-      res.status(502).send("Unable to download a verified APK right now.");
+      errorPage(res, 502, "Download unavailable", "We couldn't reach the download source. Please try again shortly.");
     } else {
       res.destroy(error);
     }
@@ -598,7 +650,10 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+// Missing files (anything with an extension) get a real 404 so image fallbacks work; everything else is the app shell.
 app.get("*", (req, res) => {
+  if (path.extname(req.path)) return res.status(404).send("Not found.");
+  res.setHeader("Cache-Control", "no-cache");
   res.sendFile(path.join(__dirname, "index.html"));
 });
 

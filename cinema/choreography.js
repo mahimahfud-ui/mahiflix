@@ -24,15 +24,20 @@ export function initChoreography({ invalidate }) {
     queue();                                  // recompute depth when the visible set changes
   }), { rootMargin: '10% 0px' }) : null;
   document.querySelectorAll('.card').forEach(c => depthIO && depthIO.observe(c));
-  const lastShift = new WeakMap();
+  const lastShift = new WeakMap(), colIdx = new WeakMap();
   const FACTOR = [0, -.55, -1.1];
   function depth() {
-    if (state.reduced || innerWidth <= 760 || !onScreen.size) return;
+    if (state.reduced || innerWidth <= 760) {            // no drift on phones: clear anything left from a wider layout
+      onScreen.forEach(c => { if (c.style.translate) { c.style.translate = ''; lastShift.set(c, 0); } });
+      return;
+    }
+    if (!onScreen.size) return;
     const reads = [];
     onScreen.forEach(c => {
       if (!c.offsetParent) return;
       const r = c.getBoundingClientRect(), prev = lastShift.get(c) || 0;
-      const idx = [...c.parentNode.children].indexOf(c) % 3;
+      let idx = colIdx.get(c);
+      if (idx === undefined) { idx = [].indexOf.call(c.parentNode.children, c) % 3; colIdx.set(c, idx); }
       const norm = clamp(((r.top + r.height / 2 - prev) - vh / 2) / vh, -1, 1);
       reads.push([c, norm * FACTOR[idx] * 34]);
     });

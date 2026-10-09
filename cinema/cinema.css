@@ -105,3 +105,69 @@ main{z-index:2}
   .cin .row-head,.cin .finale-in>*{opacity:1;transform:none;filter:none}.hero h1 .big{background-position:-20% 0}
   .intro .intro-logo:after{animation:none}
 }
+
+/* ================= iOS-style polish layer ================= */
+:root{--ios:cubic-bezier(.32,.72,0,1);--ios-out:cubic-bezier(.22,1,.36,1);
+  --spring:cubic-bezier(.34,1.56,.64,1)}
+@supports (transition-timing-function:linear(0,1)){
+  :root{--spring:linear(0,.009,.035 2.1%,.141 4.4%,.723 12.9%,.938 16.7%,1.017 20.1%,1.045 22.5%,1.052 25%,1.031 31%,1.006 38%,.998 46%,1)}
+}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+a,button,.card{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button{-webkit-user-select:none;user-select:none}
+
+/* sliding segmented control (like iOS) */
+.mode-switch{position:relative;isolation:isolate}
+.mode-thumb{position:absolute;z-index:-1;top:5px;bottom:5px;left:0;width:0;border-radius:9px;background:var(--red);
+  box-shadow:0 5px 18px rgba(229,9,20,.32);transition:transform .6s var(--spring),width .6s var(--spring);will-change:transform,width;pointer-events:none}
+.mode-switch.has-thumb .mode.active{background:transparent;box-shadow:none}
+.mode{position:relative;transition:transform .45s var(--spring),color .35s ease}
+.mode:not(.active):hover{color:#fff}
+.mode:active{transform:scale(.94)}
+
+/* press feedback with spring release */
+.btn,.round,.ig-link,.cue{transition:transform .5s var(--spring),background .35s ease,box-shadow .35s ease,color .35s ease,opacity .4s ease}
+.btn:hover{transform:translate3d(0,-2px,0)}
+.btn.play:hover{background:#e8e8e8}.btn.info:hover{background:rgba(109,109,110,.9)}
+.btn:active,.round:active{transform:scale(.94);transition-duration:.12s}
+.round{transition:transform .5s var(--spring),background .3s ease,border-color .3s ease}
+.round:hover{border-color:#fff;transform:scale(1.08)}
+.round.pop{animation:pop .55s var(--spring)}
+@keyframes pop{0%{transform:scale(.7)}100%{transform:scale(1)}}
+.card.live:active{transition-duration:.15s}
+
+/* smoother, iOS-curve hover lift */
+.card,.card.live{transition:transform .6s var(--ios-out),box-shadow .6s var(--ios-out),rotate .45s var(--ios-out)}
+.card .more{transition:opacity .4s var(--ios-out),transform .6s var(--spring)}
+.card.live:hover .more,.card.live:focus-within .more{transform:translateY(0)}
+.card.live:hover img.logo-ready,.card.live:focus-within img.logo-ready{transform:translateZ(0) scale(1.045)}
+
+/* search expands like an iOS search field */
+.search{border-radius:10px;transition:border-color .4s var(--ios-out),background .4s var(--ios-out),transform .5s var(--spring)}
+.search input{transition:width .6s var(--spring),opacity .3s ease,margin-left .6s var(--spring)}
+.search.open{transform:scale(1.015)}
+
+/* views: soft rise instead of a plain fade */
+.view.active{animation:viewIn .7s var(--ios-out) both}
+@keyframes viewIn{from{opacity:0;transform:translate3d(0,14px,0) scale(.992)}to{opacity:1;transform:none}}
+
+/* nav: iOS bar blur */
+nav.solid{backdrop-filter:blur(22px) saturate(1.8);-webkit-backdrop-filter:blur(22px) saturate(1.8)}
+.mode-switch{backdrop-filter:blur(20px) saturate(1.6);-webkit-backdrop-filter:blur(20px) saturate(1.6)}
+nav ul a{transition:color .3s ease}
+.nav-tools .search button{transition:transform .4s var(--spring)}.nav-tools .search button:active{transform:scale(.85)}
+
+/* focus ring that doesn't flash on mouse click */
+:focus:not(:focus-visible){outline:none}
+
+/* touch devices: no sticky hover states */
+@media(hover:none){
+  .card.live:hover:not(:focus-within){transform:none;box-shadow:none;z-index:auto}
+  .card.live:hover:not(:focus-within) img.logo-ready{transform:translateZ(0);filter:contrast(1.04) saturate(1.04)}
+  .card.live:hover:not(:focus-within):after{opacity:0}
+  .card.live:active{transform:scale(.965)}
+  .card.live:hover:not(:focus-within) .cap{display:block}
+  .btn:hover{transform:none}.round:hover{transform:none}
+}
+@media(max-width:760px){.mode-thumb{top:5px;bottom:5px}.mode-switch{backdrop-filter:none;-webkit-backdrop-filter:none}}
+@media(prefers-reduced-motion:reduce){.mode-thumb{transition:none}.view.active{animation:none}.round.pop{animation:none}}

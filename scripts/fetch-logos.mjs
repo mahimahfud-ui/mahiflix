@@ -4,8 +4,9 @@ import crypto from "node:crypto";
 
 const root = process.cwd();
 const indexPath = path.join(root, "index.html");
-const outDir = path.join(root, "public", "assets", "logos");
-const manifestPath = path.join(root, "public", "logo-manifest.js");
+// Written next to index.html because that is the folder server.js serves.
+const outDir = path.join(root, "assets", "logos");
+const manifestPath = path.join(root, "logo-manifest.js");
 
 const html = await fs.readFile(indexPath, "utf8");
 await fs.mkdir(outDir, { recursive: true });
@@ -19,7 +20,12 @@ while ((match = re.exec(html))) {
 }
 
 const timeoutMs = 8000;
-const manifest = {};
+// Keep the committed logos for any site whose live logo can't be fetched at build time.
+let manifest = {};
+try {
+  const prev = await fs.readFile(manifestPath, "utf8");
+  manifest = JSON.parse(prev.slice(prev.indexOf("{"), prev.lastIndexOf("}") + 1));
+} catch {}
 
 function extFor(type, url) {
   const t = (type || "").split(";")[0].toLowerCase();

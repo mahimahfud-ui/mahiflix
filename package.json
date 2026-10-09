@@ -10,6 +10,7 @@
     "lint": "echo 'No linting errors'"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "compression": "^1.7.5"
   }
 }

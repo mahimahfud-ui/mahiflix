@@ -203,7 +203,7 @@ app.get("/api/tmdb/*", async (req, res) => {
 });
 
 
-const APP_DOWNLOAD_CACHE_MS = 5 * 60_000;
+const APP_DOWNLOAD_CACHE_MS = 60_000;
 const APP_DOWNLOAD_TIMEOUT_MS = 120_000;
 const APP_RESOLVER_TIMEOUT_MS = 12_000;
 const APP_MAX_REDIRECTS = 5;
@@ -230,13 +230,13 @@ const APP_DOWNLOADS = {
   },
   cinehd: {
     page: "https://cinehd.dev/",
-    fallback: "https://cinehd.dev/download/global/CineHD-v1.1.4-(Universal).apk",
+    fallback: null,
     allowedHosts: ["cinehd.dev"],
     patterns: [/https?:\/\/[^"'\\s<>]*CineHD[^"'\\s<>]*Universal[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
   moviboxapk: {
     page: "https://moviboxapk.com/",
-    fallback: "https://file.dxmaxapk.com/moviebox-4-0-03-0930-03.apk",
+    fallback: null,
     allowedHosts: ["moviboxapk.com", "file.dxmaxapk.com"],
     patterns: [/https?:\/\/[^"'\\s<>]+moviebox[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
   },
@@ -254,7 +254,7 @@ const APP_DOWNLOADS = {
   },
   anivortex: {
     page: "https://anivortex.in/",
-    fallback: "https://anivortex.in/apk/anivortex_5.0.2.apk",
+    fallback: null,
     allowedHosts: ["anivortex.in"],
     patterns: [/https?:\/\/[^"'\\s<>]*\/apk\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
   },
@@ -270,11 +270,59 @@ const APP_DOWNLOADS = {
     allowedHosts: ["www.nuvixapp.in", "nuvixapp.in"],
     patterns: [/https?:\/\/[^"'\\s<>]+\.apk(?:\?[^"'\\s<>]*)?/i]
   },
+  "bitchord": {
+    page: "https://api.github.com/repos/kushagrasinghx/BitChord/releases/latest",
+    fallback: null,
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+    githubLatest: true,
+    assetPattern: { test: (name) => String(name || "").startsWith("BitChord-v") && String(name || "").endsWith(".apk") && !String(name || "").includes("_") }
+  },
+  "echo-music": {
+    page: "https://api.github.com/repos/EchoMusicApp/Echo-Music/releases/latest",
+    fallback: null,
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+    githubLatest: true,
+    assetPattern: { test: (name) => String(name || "") === "EchoMusic.apk" }
+  },
+  "echo-nightly": {
+    page: "https://api.github.com/repos/itsmechinmoy/echo-nightly/releases/latest",
+    fallback: null,
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+    githubLatest: true,
+    assetPattern: { test: (name) => String(name || "") === "app-release.apk" }
+  },
+  outertune: {
+    page: "https://api.github.com/repos/OuterTune/OuterTune/releases/latest",
+    fallback: null,
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+    githubLatest: true,
+    assetPattern: { test: (name) => String(name || "").includes("full-release-") && String(name || "").endsWith(".apk") }
+  },
+  lastwave: {
+    page: "https://api.github.com/repos/Clash-Projects/LastWave-Native/releases/latest",
+    fallback: null,
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+    githubLatest: true,
+    assetPattern: { test: (name) => String(name || "").endsWith("-universal.apk") }
+  },
+  spotube: {
+    page: "https://api.github.com/repos/team-spotube/spotube/releases/latest",
+    fallback: null,
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+    githubLatest: true,
+    assetPattern: { test: (name) => String(name || "") === "Spotube-android-all-arch.apk" }
+  },
+  dooflix: {
+    page: "https://dooflixapk.com/",
+    fallback: null,
+    allowedHosts: ["dooflixapk.com", "www.dooflixapk.com"]
+  },
   nxsha: {
-    page: "https://nxsha.app/",
-    fallback: "https://github.com/dev-alessiorizzo/nxsha-apk/releases/download/V2.1/Nxsha-v2.1-.Universal.apk",
-    allowedHosts: ["nxsha.app", "github.com"],
-    patterns: [/https?:\/\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
+    page: "https://api.github.com/repos/dev-alessiorizzo/nxsha-apk/releases/latest",
+    fallback: null,
+    allowedHosts: ["github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+    githubLatest: true,
+    assetPattern: { test: (name) => String(name || "").endsWith(".Universal.apk") }
   }
 };
 
@@ -298,7 +346,7 @@ function allowedDownloadUrl(url, config) {
     url &&
     url.protocol === "https:" &&
     config.allowedHosts.includes(url.hostname) &&
-    /\.apk$/i.test(url.pathname)
+    /\.(?:apk|xapk)$/i.test(url.pathname)
   );
 }
 

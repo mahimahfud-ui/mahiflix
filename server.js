@@ -226,49 +226,49 @@ const APP_DOWNLOADS = {
     page: "https://netmirror.gg/10/en-us",
     fallback: "https://netmirror.gg/NetMirror.apk",
     allowedHosts: ["netmirror.gg"],
-    patterns: [/https?:\/\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
   },
   cinehd: {
     page: "https://cinehd.dev/",
     fallback: null,
     allowedHosts: ["cinehd.dev"],
-    patterns: [/https?:\/\/[^"'\\s<>]*CineHD[^"'\\s<>]*Universal[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]*CineHD[^"'\s<>]*Universal[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   moviboxapk: {
     page: "https://moviboxapk.com/",
     fallback: null,
     allowedHosts: ["moviboxapk.com", "file.dxmaxapk.com"],
-    patterns: [/https?:\/\/[^"'\\s<>]+moviebox[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]+moviebox[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   pvrplay: {
     page: "https://pvrplay.online/",
     fallback: "https://stream.phoasy.com/app/PvrPlay.apk",
     allowedHosts: ["pvrplay.online", "stream.phoasy.com"],
-    patterns: [/https?:\/\/[^"'\\s<>]*PvrPlay[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]*PvrPlay[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   hdghartv: {
     page: "https://hdghartv.com.pk/apk/",
     fallback: null,
     allowedHosts: ["watch.hdghartv.com.pk", "hdghartv.com.pk", "download.hdghartv.com.pk"],
-    patterns: [/https?:\/\/[^"'\\s<>]+HDGharTV[^"'\\s<>]*\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]+HDGharTV[^"'\s<>]*\.apk[^"'\s<>]*/i]
   },
   anivortex: {
     page: "https://anivortex.in/",
     fallback: null,
     allowedHosts: ["anivortex.in"],
-    patterns: [/https?:\/\/[^"'\\s<>]*\/apk\/[^"'\\s<>]+\.apk[^"'\\s<>]*/i]
+    patterns: [/https?:\/\/[^"'\s<>]*\/apk\/[^"'\s<>]+\.apk[^"'\s<>]*/i]
   },
   filmtv: {
     page: "https://www.filmtvapp.com/",
     fallback: null,
     allowedHosts: ["www.filmtvapp.com", "filmtvapp.com"],
-    patterns: [/https?:\/\/[^"'\\s<>]+\.apk(?:\?[^"'\\s<>]*)?/i]
+    patterns: [/https?:\/\/[^"'\s<>]+\.apk(?:\?[^"'\s<>]*)?/i]
   },
   nuvix: {
     page: "https://www.nuvixapp.in/",
     fallback: null,
     allowedHosts: ["www.nuvixapp.in", "nuvixapp.in"],
-    patterns: [/https?:\/\/[^"'\\s<>]+\.apk(?:\?[^"'\\s<>]*)?/i]
+    patterns: [/https?:\/\/[^"'\s<>]+\.apk(?:\?[^"'\s<>]*)?/i]
   },
   "bitchord": {
     page: "https://api.github.com/repos/kushagrasinghx/BitChord/releases/latest",
@@ -363,12 +363,12 @@ function extractLatestApk(html, config, baseUrl = config.page) {
   }
 
   // Handle relative APK links used by many download pages.
-  for (const match of html.matchAll(/(?:href|src|data-href|data-url)\s*=\s*["']([^"']+\.apk(?:\?[^"']*)?)["']/gi)) {
+  for (const match of html.matchAll(/(?:href|src|data-href|data-url)\s*=\s*["']([^"']+\.(?:apk|xapk)(?:\?[^"']*)?)["']/gi)) {
     addCandidate(match[1]);
   }
 
   // Also catch quoted absolute/relative APK URLs embedded in scripts.
-  for (const match of html.matchAll(/["']((?:https?:\/\/|\/)[^"'\\s<>]+\.apk(?:\?[^"'\\s<>]*)?)["']/gi)) {
+  for (const match of html.matchAll(/["']((?:https?:\/\/|\/)[^"'\s<>]+\.(?:apk|xapk)(?:\?[^"'\s<>]*)?)["']/gi)) {
     addCandidate(match[1]);
   }
 
